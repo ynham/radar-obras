@@ -14,8 +14,8 @@
   <!-- Chart.js para Gráficos -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Estilos Customizados do Sistema (Cache-Busted v3.2) -->
-  <link rel="stylesheet" href="./styles.css?v=3.2.0">
+  <!-- Estilos Customizados do Sistema (Cache-Busted v3.3) -->
+  <link rel="stylesheet" href="./styles.css?v=3.3.0">
 </head>
 <body>
 
@@ -175,6 +175,16 @@
           <option value="menor_valor">Menor Valor</option>
         </select>
 
+        <!-- Botões Explícitos de Ação do Filtro -->
+        <div class="filter-actions-group">
+          <button class="btn-filter-apply" id="btnAplicarFiltro" onclick="aplicarFiltros()" title="Aplicar filtros selecionados à lista">
+            <i class="bi bi-funnel-fill"></i> <span>Aplicar Filtros</span>
+          </button>
+          <button class="btn-filter-clear" id="btnLimparFiltro" onclick="limparFiltros()" title="Limpar todos os filtros">
+            <i class="bi bi-arrow-counterclockwise"></i> <span>Limpar</span>
+          </button>
+        </div>
+
         <div class="view-toggle">
           <button class="btn-toggle active" id="btnViewGrid" title="Visualização em Cartões">
             <i class="bi bi-grid-fill"></i>
@@ -182,6 +192,13 @@
           <button class="btn-toggle" id="btnViewTable" title="Visualização em Tabela">
             <i class="bi bi-table"></i>
           </button>
+        </div>
+
+        <!-- Barra de Status com Contador de Obras -->
+        <div class="filter-statusbar">
+          <div class="filter-count-badge" id="countOportunidades">
+            Exibindo <strong id="numFiltrados">47</strong> de <span id="numTotalBase">47</span> obras encontradas
+          </div>
         </div>
 
         <!-- Pílulas de Filtro Rápido em 1 Clique -->
@@ -1154,6 +1171,7 @@ dimensional: capacidade de corte para blocos com largura de até 33 cm, ou super
   ]
 };</script>
   <div class="toast-container" id="toastContainer"></div>
-  <script src="./app.js"></script>
+  <script src="./app.js?v=3.3.0"></script>
 </body>
+
 </html>

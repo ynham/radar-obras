@@ -67,8 +67,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   configurarEventosUI();
   await carregarDados();
   atualizarKPIs();
+  atualizarContadorResultados();
   renderizarAbaAtual();
 });
+
 
 // Configura Listeners de Navegação e Filtros
 function configurarEventosUI() {
@@ -247,36 +249,112 @@ function filtrarRapido(tipo) {
   aplicarFiltros();
 }
 
-// Filtros do Radar
+// Função Auxiliar de Normalização de Texto (Ignora Acentos e Caixa)
+function normalizarTexto(txt) {
+  return (txt || '')
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+// Limpar Todos os Filtros
+function limparFiltros() {
+  const elTexto = document.getElementById('filtroTexto');
+  const elAlim = document.getElementById('filtroAlimentador');
+  const elReg = document.getElementById('filtroRegiao');
+  const elCat = document.getElementById('filtroCategoria');
+  const elPorte = document.getElementById('filtroPorte');
+  const elOrd = document.getElementById('filtroOrdenacao');
+
+  if (elTexto) elTexto.value = '';
+  if (elAlim) elAlim.value = '';
+  if (elReg) elReg.value = '';
+  if (elCat) elCat.value = '';
+  if (elPorte) elPorte.value = '';
+  if (elOrd) elOrd.value = 'data_recente';
+
+  document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
+  const btnTodos = document.querySelector(`[onclick="filtrarRapido('todos')"]`);
+  if (btnTodos) btnTodos.classList.add('active');
+
+  AppState.filtrados = [...AppState.dados];
+  renderizarRadar();
+  atualizarContadorResultados();
+  mostrarToast('Filtros redefinidos. Exibindo todas as oportunidades.', 'info');
+}
+
+// Atualizar Contador Visual de Obras Filtradas
+function atualizarContadorResultados() {
+  const elNum = document.getElementById('numFiltrados');
+  const elTotal = document.getElementById('numTotalBase');
+  const badgeAba = document.getElementById('badgeTotalAba');
+
+  const totalFiltrados = AppState.filtrados.length;
+  const totalBase = AppState.dados.length;
+
+  if (elNum) elNum.innerText = totalFiltrados;
+  if (elTotal) elTotal.innerText = totalBase;
+  if (badgeAba) badgeAba.innerText = totalFiltrados;
+}
+
+// Filtros do Radar (Acionado pelo Botão "Aplicar Filtros" ou Seleção)
 function aplicarFiltros() {
-  const busca = (document.getElementById('filtroTexto').value || '').toLowerCase();
-  const alimentador = document.getElementById('filtroAlimentador').value;
-  const regiao = document.getElementById('filtroRegiao').value;
-  const categoria = document.getElementById('filtroCategoria').value.toLowerCase();
-  const porte = parseFloat(document.getElementById('filtroPorte').value) || 0;
-  const ordenacao = document.getElementById('filtroOrdenacao').value;
+  const busca = normalizarTexto(document.getElementById('filtroTexto')?.value);
+  const alimentador = normalizarTexto(document.getElementById('filtroAlimentador')?.value);
+  const regiao = (document.getElementById('filtroRegiao')?.value || '').trim();
+  const categoria = normalizarTexto(document.getElementById('filtroCategoria')?.value);
+  const porte = parseFloat(document.getElementById('filtroPorte')?.value) || 0;
+  const ordenacao = document.getElementById('filtroOrdenacao')?.value || 'data_recente';
 
   AppState.filtrados = AppState.dados.filter(item => {
-    const matchBusca = !busca || 
-      (item['Objeto'] && item['Objeto'].toLowerCase().includes(busca)) ||
-      (item['Órgão'] && item['Órgão'].toLowerCase().includes(busca)) ||
-      (item['Município'] && item['Município'].toLowerCase().includes(busca)) ||
-      (item['Processo'] && String(item['Processo']).toLowerCase().includes(busca));
+    // 1. Busca textual ampla
+    if (busca) {
+      const obj = normalizarTexto(item['Objeto']);
+      const org = normalizarTexto(item['Órgão']);
+      const mun = normalizarTexto(item['Município']);
+      const proc = normalizarTexto(item['Processo']);
+      const cat = normalizarTexto(item['Categoria']);
+      if (!obj.includes(busca) && !org.includes(busca) && !mun.includes(busca) && !proc.includes(busca) && !cat.includes(busca)) {
+        return false;
+      }
+    }
 
-    const matchAlimentador = !alimentador || 
-      (item['Alimentador'] && item['Alimentador'].toLowerCase().includes(alimentador.toLowerCase())) ||
-      (item['Origem'] && item['Origem'].toLowerCase().includes(alimentador.toLowerCase()));
+    // 2. Alimentador / Origem
+    if (alimentador) {
+      const itemAlim = normalizarTexto(item['Alimentador']);
+      const itemOrig = normalizarTexto(item['Origem']);
+      if (!itemAlim.includes(alimentador) && !itemOrig.includes(alimentador)) {
+        return false;
+      }
+    }
 
-    const matchRegiao = !regiao || item['Prioritária (Cuiabá/VG)'] === regiao;
-    const matchCategoria = !categoria || (item['Categoria'] && item['Categoria'].toLowerCase().includes(categoria));
-    
-    let matchPorte = true;
-    const val = item['Valor Estimado (R$)'] || 0;
-    if (porte === 120000) matchPorte = val <= 120000 && val > 0;
-    if (porte === 500000) matchPorte = val > 120000 && val <= 500000;
-    if (porte === 1000000) matchPorte = val > 500000;
+    // 3. Região (Cuiabá / Várzea Grande)
+    if (regiao) {
+      const itemPrioritaria = normalizarTexto(item['Prioritária (Cuiabá/VG)']);
+      const itemMun = normalizarTexto(item['Município']);
+      const isCuiabaVG = itemPrioritaria.startsWith('sim') || itemMun.includes('cuiaba') || itemMun.includes('varzea');
+      
+      if (regiao === 'SIM' && !isCuiabaVG) return false;
+      if (regiao === 'NÃO' && isCuiabaVG) return false;
+    }
 
-    return matchBusca && matchAlimentador && matchRegiao && matchCategoria && matchPorte;
+    // 4. Categoria
+    if (categoria) {
+      const itemCat = normalizarTexto(item['Categoria']);
+      if (!itemCat.includes(categoria)) return false;
+    }
+
+    // 5. Faixa de Valor
+    if (porte > 0) {
+      const val = item['Valor Estimado (R$)'] || 0;
+      if (porte === 120000 && (val <= 0 || val > 120000)) return false;
+      if (porte === 500000 && (val <= 120000 || val > 500000)) return false;
+      if (porte === 1000000 && val <= 500000) return false;
+    }
+
+    return true;
   });
 
   // Ordenação
@@ -290,6 +368,8 @@ function aplicarFiltros() {
   }
 
   renderizarRadar();
+  atualizarContadorResultados();
+  mostrarToast(`Filtros aplicados: ${AppState.filtrados.length} obra(s) encontrada(s).`, 'info');
 }
 
 // Renderizar Lista de Editais (Grid ou Tabela)
