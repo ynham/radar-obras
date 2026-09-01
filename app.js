@@ -53,6 +53,7 @@ function configurarEventosUI() {
 
   // Filtros em Tempo Real
   document.getElementById('filtroTexto').addEventListener('input', debounce(aplicarFiltros, 250));
+  document.getElementById('filtroOrigem').addEventListener('change', aplicarFiltros);
   document.getElementById('filtroRegiao').addEventListener('change', aplicarFiltros);
   document.getElementById('filtroCategoria').addEventListener('change', aplicarFiltros);
   document.getElementById('filtroPorte').addEventListener('change', aplicarFiltros);
@@ -122,12 +123,12 @@ async function carregarDados() {
 function atualizarKPIs() {
   const total = AppState.dados.length;
   const cuiabaVG = AppState.dados.filter(d => d['Prioritária (Cuiabá/VG)'] === 'SIM').length;
-  const pequenoPorte = AppState.dados.filter(d => (d['Valor Estimado (R$)'] || 0) <= 120000 && (d['Valor Estimado (R$)'] || 0) > 0).length;
+  const privadasSistemas = AppState.dados.filter(d => (d['Origem'] || '').includes('Sistema S') || (d['Origem'] || '').includes('Privada')).length;
   const volumeTotal = AppState.dados.reduce((acc, curr) => acc + (curr['Valor Estimado (R$)'] || 0), 0);
 
   document.getElementById('kpiTotal').textContent = total;
   document.getElementById('kpiCuiaba').textContent = cuiabaVG;
-  document.getElementById('kpiPequenoPorte').textContent = pequenoPorte;
+  document.getElementById('kpiPrivadasSistemas').textContent = privadasSistemas;
   document.getElementById('kpiVolume').textContent = formatarMoeda(volumeTotal);
 
   document.getElementById('badgeTotalAba').textContent = total;
@@ -153,6 +154,7 @@ function renderizarAbaAtual() {
 // Filtros do Radar
 function aplicarFiltros() {
   const busca = (document.getElementById('filtroTexto').value || '').toLowerCase();
+  const origem = document.getElementById('filtroOrigem').value;
   const regiao = document.getElementById('filtroRegiao').value;
   const categoria = document.getElementById('filtroCategoria').value.toLowerCase();
   const porte = parseFloat(document.getElementById('filtroPorte').value) || 0;
@@ -165,6 +167,7 @@ function aplicarFiltros() {
       (item['Município'] && item['Município'].toLowerCase().includes(busca)) ||
       (item['Processo'] && String(item['Processo']).toLowerCase().includes(busca));
 
+    const matchOrigem = !origem || (item['Origem'] && item['Origem'].includes(origem));
     const matchRegiao = !regiao || item['Prioritária (Cuiabá/VG)'] === regiao;
     const matchCategoria = !categoria || (item['Categoria'] && item['Categoria'].toLowerCase().includes(categoria));
     
@@ -174,7 +177,7 @@ function aplicarFiltros() {
     if (porte === 500000) matchPorte = val > 120000 && val <= 500000;
     if (porte === 1000000) matchPorte = val > 500000;
 
-    return matchBusca && matchRegiao && matchCategoria && matchPorte;
+    return matchBusca && matchOrigem && matchRegiao && matchCategoria && matchPorte;
   });
 
   // Ordenação
@@ -223,16 +226,27 @@ function criarCardEdital(item) {
   const isFav = AppState.favoritos.includes(item._id);
   const temNotas = !!AppState.anotacoes[item._id];
   const statusKanban = AppState.kanban[item._id] || 'novas';
+  const origem = item['Origem'] || '🏛️ Governo / PNCP';
+
+  let badgeOrigemClass = 'badge-origem-gov';
+  let labelLink = 'PNCP';
+  if (origem.includes('Sistema S')) {
+    badgeOrigemClass = 'badge-origem-sistemas';
+    labelLink = 'Edital S';
+  } else if (origem.includes('Privada')) {
+    badgeOrigemClass = 'badge-origem-privada';
+    labelLink = 'Alvará';
+  }
 
   return `
     <div class="tender-card" id="card_${item._id}">
       <div class="card-top">
         <div class="card-badges">
+          <span class="badge ${badgeOrigemClass}">${origem}</span>
           <span class="badge ${isCuiaba ? 'badge-cuiaba' : 'badge-interior'}">
             <i class="bi bi-geo-alt-fill"></i> ${item['Município'] || 'MT'}
           </span>
           <span class="badge badge-cat">${item['Categoria'] || 'Geral'}</span>
-          <span class="badge badge-dispensa">${item['Modalidade'] || 'Edital'}</span>
         </div>
         <button class="btn-fav ${isFav ? 'active' : ''}" onclick="toggleFavorito('${item._id}')" title="Marcar como Favorito">
           <i class="bi ${isFav ? 'bi-star-fill' : 'bi-star'}"></i>
@@ -257,7 +271,7 @@ function criarCardEdital(item) {
 
       <div class="card-actions">
         <a href="${item['Link PNCP'] || '#'}" target="_blank" rel="noopener noreferrer" class="btn-edital">
-          <i class="bi bi-box-arrow-up-right"></i> PNCP
+          <i class="bi bi-box-arrow-up-right"></i> ${labelLink}
         </a>
         
         <button class="btn-card-action" onclick="abrirModalAnotacoes('${item._id}')" title="Anotações da Construtora">
@@ -285,6 +299,17 @@ function criarCardEdital(item) {
 function criarLinhaTabela(item) {
   const isCuiaba = item['Prioritária (Cuiabá/VG)'] === 'SIM';
   const isFav = AppState.favoritos.includes(item._id);
+  const origem = item['Origem'] || '🏛️ Governo / PNCP';
+
+  let badgeOrigemClass = 'badge-origem-gov';
+  let labelLink = 'PNCP';
+  if (origem.includes('Sistema S')) {
+    badgeOrigemClass = 'badge-origem-sistemas';
+    labelLink = 'Edital S';
+  } else if (origem.includes('Privada')) {
+    badgeOrigemClass = 'badge-origem-privada';
+    labelLink = 'Alvará';
+  }
 
   return `
     <tr>
@@ -295,7 +320,8 @@ function criarLinhaTabela(item) {
       </td>
       <td style="white-space: nowrap; font-size: 0.8rem; color: var(--text-muted);">${item['Data Publicação'] || 'N/A'}</td>
       <td>
-        <span class="badge ${isCuiaba ? 'badge-cuiaba' : 'badge-interior'}">${item['Município'] || 'MT'}</span>
+        <span class="badge ${badgeOrigemClass}">${origem}</span><br>
+        <span class="badge ${isCuiaba ? 'badge-cuiaba' : 'badge-interior'}" style="margin-top: 4px;">${item['Município'] || 'MT'}</span>
       </td>
       <td><span class="badge badge-cat">${item['Categoria'] || 'Geral'}</span></td>
       <td>
@@ -307,7 +333,7 @@ function criarLinhaTabela(item) {
       </td>
       <td style="text-align: center; white-space: nowrap;">
         <a href="${item['Link PNCP'] || '#'}" target="_blank" class="btn-edital" style="display: inline-flex; padding: 5px 10px; font-size: 0.78rem;">
-          <i class="bi bi-box-arrow-up-right"></i> Ver
+          <i class="bi bi-box-arrow-up-right"></i> ${labelLink}
         </a>
       </td>
     </tr>
@@ -429,11 +455,12 @@ function compartilharWhatsApp(id) {
   if (!item) return;
 
   const texto = `🏗️ *OPORTUNIDADE DE OBRA (MT)*\n\n` +
+    `📌 *Origem:* ${item['Origem'] || 'Governo'}\n` +
     `📍 *Local:* ${item['Município']}\n` +
-    `🏢 *Órgão:* ${item['Órgão']}\n` +
-    `💰 *Valor:* ${formatarMoeda(item['Valor Estimado (R$)'])}\n` +
+    `🏢 *Contratante/Requerente:* ${item['Órgão']}\n` +
+    `💰 *Valor Estimado:* ${formatarMoeda(item['Valor Estimado (R$)'])}\n` +
     `🏷️ *Categoria:* ${item['Categoria']}\n\n` +
-    `📋 *Objeto:* ${item['Objeto']}\n\n` +
+    `📋 *Descrição:* ${item['Objeto']}\n\n` +
     `🔗 *Link Oficial:* ${item['Link PNCP']}`;
 
   const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;

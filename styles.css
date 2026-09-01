@@ -509,6 +509,36 @@ body {
   border: 1px solid var(--amber-border);
 }
 
+.badge-origem-gov {
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+}
+
+.badge-origem-sistemas {
+  background: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #d8b4fe;
+}
+
+[data-theme="dark"] .badge-origem-sistemas {
+  background: rgba(126, 34, 206, 0.2);
+  color: #c084fc;
+  border: 1px solid rgba(192, 132, 252, 0.3);
+}
+
+.badge-origem-privada {
+  background: #ffedd5;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+[data-theme="dark"] .badge-origem-privada {
+  background: rgba(194, 65, 12, 0.2);
+  color: #fb923c;
+  border: 1px solid rgba(251, 146, 60, 0.3);
+}
+
 .btn-fav {
   background: transparent;
   border: none;

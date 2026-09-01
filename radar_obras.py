@@ -152,7 +152,8 @@ class RadarLicitacoes:
                             "Órgão": item.get("orgaoEntidadeRazaoSocial") or "N/A",
                             "Objeto": objeto.strip(),
                             "Processo": item.get("processo") or "N/A",
-                            "Link PNCP": link_pncp
+                            "Link PNCP": link_pncp,
+                            "Origem": "🏛️ Governo / PNCP"
                         })
                         total_mod += 1
                         
