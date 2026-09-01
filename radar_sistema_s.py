@@ -41,7 +41,7 @@ class RadarSistemaS:
                 "Data Publicação": "2026-07-15",
                 "Processo": "LIC-SESI-2026/042",
                 "Objeto": "Contratação de empresa de engenharia para execução de obras de reforma da cobertura metálica, impermeabilização de calhas e revitalização da fachada da Unidade SESI Saúde Cuiabá.",
-                "Link PNCP": "https://compras.sfiemt.ind.br/Default.aspx",
+                "Link PNCP": "https://compras.sfiemt.ind.br/portal/Mural.aspx?nNmTela=E",
                 "Origem": "🏢 Sistema S"
             },
             {
@@ -54,7 +54,7 @@ class RadarSistemaS:
                 "Data Publicação": "2026-07-10",
                 "Processo": "DISP-SENAI-2026/019",
                 "Objeto": "Reforma e adequação do sistema de climatização e ventilação mecânica dos laboratórios práticos de mecânica e soldagem da Faculdade de Tecnologia SENAI Várzea Grande.",
-                "Link PNCP": "https://compras.sfiemt.ind.br/Default.aspx",
+                "Link PNCP": "https://compras.sfiemt.ind.br/portal/Mural.aspx?nNmTela=E",
                 "Origem": "🏢 Sistema S"
             },
             {
@@ -80,7 +80,7 @@ class RadarSistemaS:
                 "Data Publicação": "2026-06-18",
                 "Processo": "LIC-SENAI-2026/031",
                 "Objeto": "Construção de galpão anexo em estrutura pré-moldada de concreto e piso industrial para ampliação da oficina de maquinários pesados da Unidade Integrada SENAI Rondonópolis.",
-                "Link PNCP": "https://compras.sfiemt.ind.br/Default.aspx",
+                "Link PNCP": "https://compras.sfiemt.ind.br/portal/Mural.aspx?nNmTela=E",
                 "Origem": "🏢 Sistema S"
             },
             {

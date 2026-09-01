@@ -37,8 +37,9 @@ function obterLinkSeguro(item) {
   const origem = (item['Origem'] || item['Alimentador'] || '').toUpperCase();
 
   if (orgao.includes('SESI') || orgao.includes('SENAI') || orgao.includes('FIEMT') || orgao.includes('IEL')) {
-    return 'https://compras.sfiemt.ind.br/Default.aspx';
+    return 'https://compras.sfiemt.ind.br/portal/Mural.aspx?nNmTela=E';
   }
+
   if (orgao.includes('SESC') || orgao.includes('SENAC')) {
     return 'https://transparencia-mt.sesc.com.br';
   }
