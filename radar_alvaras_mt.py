@@ -119,7 +119,7 @@ class RadarAlvarasMT:
                 "Data Publicação": item["Data Publicação"],
                 "Processo": item["NumeroAlvara"],
                 "Objeto": f"[{item['Bairro']}] {item['Objeto']}",
-                "Link PNCP": item["LinkOficial"],
+                "Link PNCP": "https://diariomunicipal.org/mt/amm/" if ("VÁRZEA" in str(item.get("Município", "")).upper() or "VARZEA" in str(item.get("Município", "")).upper()) else "https://gazetamunicipal.cuiaba.mt.gov.br/",
                 "Origem": "🏗️ Obra Privada (Alvará)",
                 "Alimentador": "Diário Oficial (Alvarás Cuiabá/VG)"
             })

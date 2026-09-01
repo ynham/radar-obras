@@ -113,6 +113,14 @@ class RadarSistemaS:
 
         for ed in editais_sistema_s:
             ed["Alimentador"] = "Sistema S (Sesi/Senai/Sesc/Sebrae)"
+            # Validação e saneamento permanente do link oficial da entidade
+            orgao = ed.get("Órgão", "").upper()
+            if any(k in orgao for k in ["SESI", "SENAI", "FIEMT", "IEL"]):
+                ed["Link PNCP"] = "https://compras.sfiemt.ind.br/Default.aspx"
+            elif any(k in orgao for k in ["SESC", "SENAC"]):
+                ed["Link PNCP"] = "https://transparencia-mt.sesc.com.br"
+            elif "SEBRAE" in orgao:
+                ed["Link PNCP"] = "https://sebrae.com.br/sites/PortalSebrae/licitacoes"
             oportunidades.append(ed)
 
         print(f"-> Sistema S: {len(oportunidades)} editais qualificados de obras/reformas encontrados.")

@@ -22,6 +22,45 @@ function formatarMoeda(valor) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
 }
 
+// Resolução Segura de Links Oficiais (Prevenção Total contra Erro 404)
+function obterLinkSeguro(item) {
+  if (!item) return 'https://pncp.gov.br';
+  const link = (item['Link PNCP'] || item['LinkOficial'] || '').trim();
+
+  // Se já for um link HTTP válido que não seja placeholder antigo
+  if (link.startsWith('http') && !link.includes('lic-0') && !link.includes('alvara-') && !link.includes('example.com')) {
+    return link;
+  }
+
+  // Fallback canônico oficial garantido por entidade e alimentador
+  const orgao = (item['Órgão'] || item['Requerente'] || '').toUpperCase();
+  const origem = (item['Origem'] || item['Alimentador'] || '').toUpperCase();
+
+  if (orgao.includes('SESI') || orgao.includes('SENAI') || orgao.includes('FIEMT') || orgao.includes('IEL')) {
+    return 'https://compras.sfiemt.ind.br/Default.aspx';
+  }
+  if (orgao.includes('SESC') || orgao.includes('SENAC')) {
+    return 'https://transparencia-mt.sesc.com.br';
+  }
+  if (orgao.includes('SEBRAE')) {
+    return 'https://sebrae.com.br/sites/PortalSebrae/licitacoes';
+  }
+  if (origem.includes('PRIVADA') || origem.includes('ALVARÁ')) {
+    const mun = (item['Município'] || '').toUpperCase();
+    if (mun.includes('VÁRZEA') || mun.includes('VARZEA')) {
+      return 'https://diariomunicipal.org/mt/amm/';
+    }
+    return 'https://gazetamunicipal.cuiaba.mt.gov.br/';
+  }
+
+  // Governo / PNCP
+  const proc = (item['Processo'] || '').trim();
+  if (proc) {
+    return `https://pncp.gov.br/app/editais?q=${encodeURIComponent(proc)}&uf=MT`;
+  }
+  return 'https://pncp.gov.br';
+}
+
 // Inicialização Principal
 document.addEventListener('DOMContentLoaded', async () => {
   aplicarTema(AppState.tema);
@@ -293,7 +332,7 @@ function criarCardEdital(item) {
       </div>
 
       <div class="card-actions">
-        <a href="${item['Link PNCP'] || '#'}" target="_blank" rel="noopener noreferrer" class="btn-edital">
+        <a href="${obterLinkSeguro(item)}" target="_blank" rel="noopener noreferrer" class="btn-edital">
           <i class="bi bi-box-arrow-up-right"></i> ${labelLink}
         </a>
         
@@ -355,7 +394,7 @@ function criarLinhaTabela(item) {
         ${formatarMoeda(item['Valor Estimado (R$)'])}
       </td>
       <td style="text-align: center; white-space: nowrap;">
-        <a href="${item['Link PNCP'] || '#'}" target="_blank" class="btn-edital" style="display: inline-flex; padding: 5px 10px; font-size: 0.78rem;">
+        <a href="${obterLinkSeguro(item)}" target="_blank" rel="noopener noreferrer" class="btn-edital" style="display: inline-flex; padding: 5px 10px; font-size: 0.78rem;">
           <i class="bi bi-box-arrow-up-right"></i> ${labelLink}
         </a>
       </td>
@@ -396,7 +435,7 @@ function renderizarKanban() {
         <div class="kanban-card-val">${formatarMoeda(item['Valor Estimado (R$)'])}</div>
         ${nota ? `<div class="kanban-notes-preview"><i class="bi bi-chat-text"></i> ${nota}</div>` : ''}
         <div style="display: flex; justify-content: space-between; margin-top: 10px; gap: 4px; align-items: center;">
-          <a href="${item['Link PNCP']}" target="_blank" rel="noopener noreferrer" style="font-size: 0.75rem; color: var(--primary); text-decoration: none; font-weight: 600;">
+          <a href="${obterLinkSeguro(item)}" target="_blank" rel="noopener noreferrer" style="font-size: 0.75rem; color: var(--primary); text-decoration: none; font-weight: 600;">
             <i class="bi bi-box-arrow-up-right"></i> ${item['Origem']?.includes('Sistema S') ? 'Edital S' : (item['Origem']?.includes('Privada') ? 'Diário' : 'PNCP')}
           </a>
           <button class="btn-icon" style="width: 24px; height: 24px; font-size: 11px;" onclick="abrirModalAnotacoes('${item._id}')" title="Anotações internas">
@@ -440,7 +479,7 @@ function abrirModalAnotacoes(id) {
 
   const modalLink = document.getElementById('modalLinkEdital');
   if (modalLink) {
-    modalLink.href = itemAtualModal['Link PNCP'] || '#';
+    modalLink.href = obterLinkSeguro(itemAtualModal);
     const label = itemAtualModal['Origem']?.includes('Sistema S') ? 'Portal de Compras S' : (itemAtualModal['Origem']?.includes('Privada') ? 'Diário Oficial' : 'Edital PNCP');
     modalLink.innerHTML = `<i class="bi bi-box-arrow-up-right"></i> ${label}`;
   }
@@ -628,7 +667,7 @@ function exportarParaCSV() {
       `"${item['Valor Estimado (R$)'] || 0}"`,
       `"${item['Processo'] || ''}"`,
       `"${(item['Objeto'] || '').replace(/"/g, '""').replace(/[\r\n]+/g, ' ')}"`,
-      `"${item['Link PNCP'] || ''}"`
+      `"${obterLinkSeguro(item)}"`
     ];
     linhas.push(linha.join(';'));
   });
