@@ -210,6 +210,43 @@ function renderizarAbaAtual() {
   if (AppState.abaAtiva === 'feeders') renderizarAlimentadores();
 }
 
+// Filtro Rápido em 1 Clique (Pílulas Superiores)
+function filtrarRapido(tipo) {
+  document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
+  const btnClicado = window.event?.currentTarget || document.querySelector(`[onclick="filtrarRapido('${tipo}')"]`);
+  if (btnClicado) btnClicado.classList.add('active');
+
+  const selectAlim = document.getElementById('filtroAlimentador');
+  const selectReg = document.getElementById('filtroRegiao');
+  const inputBusca = document.getElementById('filtroTexto');
+
+  if (tipo === 'todos') {
+    if (selectAlim) selectAlim.value = '';
+    if (selectReg) selectReg.value = '';
+    if (inputBusca) inputBusca.value = '';
+    AppState.filtrados = [...AppState.dados];
+    renderizarRadar();
+    return;
+  } else if (tipo === 'cuiaba') {
+    if (selectReg) selectReg.value = 'SIM';
+    if (selectAlim) selectAlim.value = '';
+  } else if (tipo === 'pncp') {
+    if (selectAlim) selectAlim.value = 'PNCP';
+    if (selectReg) selectReg.value = '';
+  } else if (tipo === 'sistemas') {
+    if (selectAlim) selectAlim.value = 'Sistema S';
+    if (selectReg) selectReg.value = '';
+  } else if (tipo === 'alvaras') {
+    if (selectAlim) selectAlim.value = 'Diário Oficial';
+    if (selectReg) selectReg.value = '';
+  } else if (tipo === 'favs') {
+    AppState.filtrados = AppState.dados.filter(d => AppState.favoritos.includes(d._id));
+    renderizarRadar();
+    return;
+  }
+  aplicarFiltros();
+}
+
 // Filtros do Radar
 function aplicarFiltros() {
   const busca = (document.getElementById('filtroTexto').value || '').toLowerCase();
@@ -291,17 +328,21 @@ function criarCardEdital(item) {
   const origem = item['Origem'] || '🏛️ Governo / PNCP';
 
   let badgeOrigemClass = 'badge-origem-gov';
-  let labelLink = 'PNCP';
+  let labelLink = 'PNCP Oficial';
+  let feederBorderClass = 'feeder-border-pncp';
+  
   if (origem.includes('Sistema S')) {
     badgeOrigemClass = 'badge-origem-sistemas';
     labelLink = 'Edital S';
+    feederBorderClass = 'feeder-border-sistemas';
   } else if (origem.includes('Privada')) {
     badgeOrigemClass = 'badge-origem-privada';
-    labelLink = 'Alvará';
+    labelLink = 'Diário Oficial';
+    feederBorderClass = 'feeder-border-alvaras';
   }
 
   return `
-    <div class="tender-card" id="card_${item._id}">
+    <div class="tender-card ${feederBorderClass}" id="card_${item._id}">
       <div class="card-top">
         <div class="card-badges">
           <span class="badge ${badgeOrigemClass}">${origem}</span>
@@ -323,7 +364,7 @@ function criarCardEdital(item) {
       <div class="card-meta">
         <div>
           <div class="meta-valor-label">Valor Estimado</div>
-          <div class="meta-valor">${formatarMoeda(item['Valor Estimado (R$)'])}</div>
+          <div class="meta-valor tabular-nums">${formatarMoeda(item['Valor Estimado (R$)'])}</div>
         </div>
         <div class="meta-date">
           <i class="bi bi-calendar3"></i> ${item['Data Publicação'] || 'N/A'}<br>
@@ -356,6 +397,7 @@ function criarCardEdital(item) {
     </div>
   `;
 }
+
 
 // Criação da Linha da Tabela
 function criarLinhaTabela(item) {

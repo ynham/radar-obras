@@ -5,21 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Radar Obras MT - Sistema de Inteligência & Gestão de Licitações</title>
   
-  <!-- Tipografia Inter & Ícones -->
+  <!-- Tipografia Plus Jakarta Sans & Inter & Ícones Bootstrap -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   
   <!-- Chart.js para Gráficos -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Estilos Customizados do Sistema -->
-  <link rel="stylesheet" href="./styles.css">
+  <!-- Estilos Customizados do Sistema (Cache-Busted v3.2) -->
+  <link rel="stylesheet" href="./styles.css?v=3.2.0">
 </head>
 <body>
 
-  <!-- Barra Superior Executiva -->
+  <!-- Brilho Ambiente de Fundo (Aurora Gradient Mesh) -->
+  <div class="ambient-glow"></div>
+
+  <!-- Barra Superior Executiva (Glassmorphism 2.0) -->
   <header class="app-navbar">
     <div class="brand-wrapper">
       <div class="brand-logo">
@@ -28,7 +31,7 @@
       <div class="brand-text">
         <h1>
           RADAR OBRAS MT 
-          <span class="badge-uf">MT • PNCP</span>
+          <span class="badge-uf">MT • 2026</span>
         </h1>
         <div class="brand-subtitle">Inteligência Comercial & Gestão de Licitações de Engenharia Civil</div>
       </div>
@@ -52,12 +55,22 @@
   <!-- Conteúdo Principal -->
   <main class="app-container">
 
-    <!-- Indicadores Rápidos (KPIs) -->
+    <!-- Hero Header / Command Deck -->
+    <section class="hero-header">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        <span>MONITORAMENTO ATIVO • PNCP, SISTEMA S & ALVARÁS MT</span>
+      </div>
+      <h2 class="hero-title">Painel de Oportunidades & Engenharia Civil</h2>
+      <p class="hero-subtitle">Mapeamento em tempo real de editais governamentais, obras do Sistema S e alvarás comerciais aprovados em Mato Grosso.</p>
+    </section>
+
+    <!-- Indicadores Rápidos (KPIs Premium com Tabular Numbers) -->
     <section class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-info">
           <h3>Total de Obras Mapeadas</h3>
-          <div class="kpi-value" id="kpiTotal">0</div>
+          <div class="kpi-value tabular-nums" id="kpiTotal">0</div>
         </div>
         <div class="kpi-icon icon-blue">
           <i class="bi bi-radar"></i>
@@ -67,7 +80,7 @@
       <div class="kpi-card">
         <div class="kpi-info">
           <h3>Foco Cuiabá & V. Grande</h3>
-          <div class="kpi-value" id="kpiCuiaba">0</div>
+          <div class="kpi-value tabular-nums" id="kpiCuiaba">0</div>
         </div>
         <div class="kpi-icon icon-emerald">
           <i class="bi bi-geo-alt"></i>
@@ -77,7 +90,7 @@
       <div class="kpi-card">
         <div class="kpi-info">
           <h3>Sistema S & Obras Privadas</h3>
-          <div class="kpi-value" id="kpiPrivadasSistemas">0</div>
+          <div class="kpi-value tabular-nums" id="kpiPrivadasSistemas">0</div>
         </div>
         <div class="kpi-icon icon-amber">
           <i class="bi bi-briefcase"></i>
@@ -87,7 +100,7 @@
       <div class="kpi-card">
         <div class="kpi-info">
           <h3>Volume Total Estimado</h3>
-          <div class="kpi-value" id="kpiVolume">R$ 0,00</div>
+          <div class="kpi-value tabular-nums" id="kpiVolume">R$ 0,00</div>
         </div>
         <div class="kpi-icon icon-indigo">
           <i class="bi bi-cash-stack"></i>
@@ -95,7 +108,7 @@
       </div>
     </section>
 
-    <!-- Navegação em Abas do Sistema -->
+    <!-- Navegação em Abas do Sistema (Apple Segmented Control) -->
     <nav class="tabs-navigation">
       <button class="tab-btn active" data-tab="radar" id="tabNavRadar">
         <i class="bi bi-compass"></i> Radar de Oportunidades 
@@ -120,7 +133,7 @@
     <!-- ABA 1: RADAR DE EDITAIS -->
     <section id="tabRadar">
       
-      <!-- Barra de Filtros Inteligentes -->
+      <!-- Barra de Filtros Inteligentes com Quick Pills -->
       <div class="filter-bar">
         <div class="search-box">
           <i class="bi bi-search search-icon"></i>
@@ -169,6 +182,16 @@
           <button class="btn-toggle" id="btnViewTable" title="Visualização em Tabela">
             <i class="bi bi-table"></i>
           </button>
+        </div>
+
+        <!-- Pílulas de Filtro Rápido em 1 Clique -->
+        <div class="quick-filter-pills">
+          <button class="pill-btn active" onclick="filtrarRapido('todos')"><i class="bi bi-collection"></i> Todas as Obras</button>
+          <button class="pill-btn" onclick="filtrarRapido('cuiaba')"><i class="bi bi-geo-alt-fill text-emerald"></i> Cuiabá & VG</button>
+          <button class="pill-btn" onclick="filtrarRapido('pncp')"><i class="bi bi-bank text-primary"></i> Governo / PNCP</button>
+          <button class="pill-btn" onclick="filtrarRapido('sistemas')"><i class="bi bi-building" style="color: var(--purple);"></i> Sistema S</button>
+          <button class="pill-btn" onclick="filtrarRapido('alvaras')"><i class="bi bi-cone-striped" style="color: var(--orange);"></i> Alvarás Privados</button>
+          <button class="pill-btn" onclick="filtrarRapido('favs')"><i class="bi bi-star-fill text-warning"></i> Favoritos</button>
         </div>
       </div>
 
