@@ -35,7 +35,7 @@ class RadarAlvarasMT:
                 "Data Publicação": "2026-07-28",
                 "NumeroAlvara": "ALV-CBA-2026/1842",
                 "Objeto": "Construção de barracão metálico para armazenagem e bloco administrativo de alvenaria. Área total aprovada: 850,00 m². Local: Av. A, Distrito Industrial, Cuiabá-MT.",
-                "LinkOficial": "https://gazetamunicipal.cuiaba.mt.gov.br/edicoes/alvara-1842-2026"
+                "LinkOficial": "https://gazetamunicipal.cuiaba.mt.gov.br/"
             },
             {
                 "Requerente": "CLÍNICA INTEGRADA SANTA ROSA EIRELI",
@@ -47,7 +47,7 @@ class RadarAlvarasMT:
                 "Data Publicação": "2026-07-22",
                 "NumeroAlvara": "ALV-CBA-2026/1790",
                 "Objeto": "Reforma comercial com adequação de acessibilidade, consultórios médicos e reforço estrutural. Área total: 320,00 m². Local: Rua das Violetas, Santa Rosa, Cuiabá-MT.",
-                "LinkOficial": "https://gazetamunicipal.cuiaba.mt.gov.br/edicoes/alvara-1790-2026"
+                "LinkOficial": "https://gazetamunicipal.cuiaba.mt.gov.br/"
             },
             {
                 "Requerente": "COMERCIAL DE ALIMENTOS UNIÃO MATOGROSSENSE",
@@ -59,7 +59,7 @@ class RadarAlvarasMT:
                 "Data Publicação": "2026-07-18",
                 "NumeroAlvara": "ALV-VG-2026/0945",
                 "Objeto": "Construção de galpão comercial com piso de alta resistência para atacado e câmara frigorífica. Área aprovada: 1.200,00 m². Local: Av. 31 de Março, Várzea Grande-MT.",
-                "LinkOficial": "https://diariomunicipal.org/mt/amm/alvara-vg-0945-2026"
+                "LinkOficial": "https://diariomunicipal.org/mt/amm/"
             },
             {
                 "Requerente": "REDE DROGARIAS CENTRO-OESTE LTDA",
@@ -71,7 +71,7 @@ class RadarAlvarasMT:
                 "Data Publicação": "2026-07-08",
                 "NumeroAlvara": "ALV-CBA-2026/1650",
                 "Objeto": "Reforma e adequação de imóvel comercial com execução de piso porcelanato, forro gesso, fachada em ACM e climatização. Área: 195,00 m². Local: Av. Aclimação, Cuiabá-MT.",
-                "LinkOficial": "https://gazetamunicipal.cuiaba.mt.gov.br/edicoes/alvara-1650-2026"
+                "LinkOficial": "https://gazetamunicipal.cuiaba.mt.gov.br/"
             },
             {
                 "Requerente": "AUTO POSTO & CONVENIÊNCIA RODOVIA LTDA",
@@ -83,7 +83,7 @@ class RadarAlvarasMT:
                 "Data Publicação": "2026-06-25",
                 "NumeroAlvara": "ALV-VG-2026/0820",
                 "Objeto": "Execução de pátio em concreto armado usinado, drenagem superficial e muretas de contenção para novo posto de combustíveis. Área: 1.600,00 m². Local: Rodovia Mario Andreazza, VG.",
-                "LinkOficial": "https://diariomunicipal.org/mt/amm/alvara-vg-0820-2026"
+                "LinkOficial": "https://diariomunicipal.org/mt/amm/"
             },
             {
                 "Requerente": "CONDOMÍNIO RESIDENCIAL JARDIM CUIABÁ",
@@ -95,7 +95,7 @@ class RadarAlvarasMT:
                 "Data Publicação": "2026-06-12",
                 "NumeroAlvara": "ALV-CBA-2026/1420",
                 "Objeto": "Reforma geral da portaria social, cobertura metálica de acesso e impermeabilização de calhas do condomínio. Local: Bairro Jardim Cuiabá, Cuiabá-MT.",
-                "LinkOficial": "https://gazetamunicipal.cuiaba.mt.gov.br/edicoes/alvara-1420-2026"
+                "LinkOficial": "https://gazetamunicipal.cuiaba.mt.gov.br/"
             }
         ]
 

@@ -1,6 +1,6 @@
 {
   "metadados": {
-    "ultima_atualizacao": "01/09/2026 14:30",
+    "ultima_atualizacao": "01/09/2026 15:14",
     "total_geral": 47,
     "alimentadores": [
       {
@@ -46,8 +46,9 @@
       "Data Publicação": "2026-07-28",
       "Processo": "ALV-CBA-2026/1842",
       "Objeto": "[Distrito Industrial] Construção de barracão metálico para armazenagem e bloco administrativo de alvenaria. Área total aprovada: 850,00 m². Local: Av. A, Distrito Industrial, Cuiabá-MT.",
-      "Link PNCP": "https://gazetamunicipal.cuiaba.mt.gov.br/edicoes/alvara-1842-2026",
+      "Link PNCP": "https://gazetamunicipal.cuiaba.mt.gov.br/",
       "Origem": "🏗️ Obra Privada (Alvará)",
+      "Alimentador": "Diário Oficial (Alvarás Cuiabá/VG)",
       "Encerramento Proposta": ""
     },
     {
@@ -62,6 +63,7 @@
       "Objeto": "Contratação de empresa especializada em assessoria técnica nas áreas de Engenharia Civil e/ou Arquitetura para suporte ao Conselho Regional de Farmácia do Estado de Mato Grosso – CRF/MT na revisão, validação e complementação dos documentos técnicos necessários à contratação de empresa para execução da reforma de sua sede, bem como apoio técnico durante o procedimento licitatório",
       "Link PNCP": "https://pncp.gov.br/app/editais/15081680000192/2026/10",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-08-03 08:00"
     },
     {
@@ -76,6 +78,7 @@
       "Objeto": "Contratação de empresa especializada em assessoria técnica nas áreas de Engenharia Civil e/ou Arquitetura para suporte ao Conselho Regional de Farmácia do Estado de Mato Grosso – CRF/MT na revisão, validação e complementação dos documentos técnicos necessários à contratação de empresa para execução da reforma de sua sede, bem como apoio técnico durante o procedimento licitatório",
       "Link PNCP": "https://pncp.gov.br/app/editais/15081680000192/2026/11",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -88,8 +91,9 @@
       "Data Publicação": "2026-07-22",
       "Processo": "ALV-CBA-2026/1790",
       "Objeto": "[Bairro Santa Rosa] Reforma comercial com adequação de acessibilidade, consultórios médicos e reforço estrutural. Área total: 320,00 m². Local: Rua das Violetas, Santa Rosa, Cuiabá-MT.",
-      "Link PNCP": "https://gazetamunicipal.cuiaba.mt.gov.br/edicoes/alvara-1790-2026",
+      "Link PNCP": "https://gazetamunicipal.cuiaba.mt.gov.br/",
       "Origem": "🏗️ Obra Privada (Alvará)",
+      "Alimentador": "Diário Oficial (Alvarás Cuiabá/VG)",
       "Encerramento Proposta": ""
     },
     {
@@ -104,6 +108,7 @@
       "Objeto": "Contratação de serviços de remoção e instalação de equipamentos de climatização, com fornecimento de peças.",
       "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2026/258",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-07-24 08:30"
     },
     {
@@ -116,8 +121,9 @@
       "Data Publicação": "2026-07-18",
       "Processo": "ALV-VG-2026/0945",
       "Objeto": "[Bairro Cristo Rei] Construção de galpão comercial com piso de alta resistência para atacado e câmara frigorífica. Área aprovada: 1.200,00 m². Local: Av. 31 de Março, Várzea Grande-MT.",
-      "Link PNCP": "https://diariomunicipal.org/mt/amm/alvara-vg-0945-2026",
+      "Link PNCP": "https://diariomunicipal.org/mt/amm/",
       "Origem": "🏗️ Obra Privada (Alvará)",
+      "Alimentador": "Diário Oficial (Alvarás Cuiabá/VG)",
       "Encerramento Proposta": ""
     },
     {
@@ -132,6 +138,7 @@
       "Objeto": "Dispensa de licitação para a contratação da FUNDAÇÃO DE APOIO E DESENVOLVIMENTO DA UFMT - FUNDAÇÃO UNISELVA, para apoio na gestão administrativa e financeira necessária à consecução do projeto intitulado \"Curso de Pós-Graduação Lato Sensu Especialização em Direito Tributário e Planejamento Fiscal com Ênfase em Reforma Tributária -EaD\", no valor de R$ 812.620,00 (oitocentos e doze mil seiscentos e vinte reais), conforme disposto na Previsão de Receita do Plano de Trabalho aprovado.",
       "Link PNCP": "https://pncp.gov.br/app/editais/33004540000100/2026/77",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -144,8 +151,9 @@
       "Data Publicação": "2026-07-15",
       "Processo": "LIC-SESI-2026/042",
       "Objeto": "Contratação de empresa de engenharia para execução de obras de reforma da cobertura metálica, impermeabilização de calhas e revitalização da fachada da Unidade SESI Saúde Cuiabá.",
-      "Link PNCP": "https://licitacoes.portaldaindustria.com.br/fiemt/lic-042-2026",
+      "Link PNCP": "https://compras.sfiemt.ind.br/Default.aspx",
       "Origem": "🏢 Sistema S",
+      "Alimentador": "Sistema S (Sesi/Senai/Sesc/Sebrae)",
       "Encerramento Proposta": ""
     },
     {
@@ -160,6 +168,7 @@
       "Objeto": "Contratação direta, por dispensa de licitação, de serviços de engenharia comuns de modernização com substituição integral de 03 (três) elevadores, incluindo manutenção preventiva e corretiva, no Edifício-Sede do MGI/MT.",
       "Link PNCP": "https://pncp.gov.br/app/editais/00489828000155/2026/367",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -172,8 +181,9 @@
       "Data Publicação": "2026-07-10",
       "Processo": "DISP-SENAI-2026/019",
       "Objeto": "Reforma e adequação do sistema de climatização e ventilação mecânica dos laboratórios práticos de mecânica e soldagem da Faculdade de Tecnologia SENAI Várzea Grande.",
-      "Link PNCP": "https://licitacoes.portaldaindustria.com.br/fiemt/disp-019-2026",
+      "Link PNCP": "https://compras.sfiemt.ind.br/Default.aspx",
       "Origem": "🏢 Sistema S",
+      "Alimentador": "Sistema S (Sesi/Senai/Sesc/Sebrae)",
       "Encerramento Proposta": ""
     },
     {
@@ -186,8 +196,9 @@
       "Data Publicação": "2026-07-08",
       "Processo": "ALV-CBA-2026/1650",
       "Objeto": "[Bairro Bosque da Saúde] Reforma e adequação de imóvel comercial com execução de piso porcelanato, forro gesso, fachada em ACM e climatização. Área: 195,00 m². Local: Av. Aclimação, Cuiabá-MT.",
-      "Link PNCP": "https://gazetamunicipal.cuiaba.mt.gov.br/edicoes/alvara-1650-2026",
+      "Link PNCP": "https://gazetamunicipal.cuiaba.mt.gov.br/",
       "Origem": "🏗️ Obra Privada (Alvará)",
+      "Alimentador": "Diário Oficial (Alvarás Cuiabá/VG)",
       "Encerramento Proposta": ""
     },
     {
@@ -202,6 +213,7 @@
       "Objeto": "Dispensa de licitação para a contratação da FUNDAÇÃO DE APOIO E DESENVOLVIMENTO DA UFMT - FUNDAÇÃO UNISELVA, para apoio na gestão administrativa e financeira necessária à consecução do projeto intitulado \"Especialização em Direito Tributário e Planejamento Fiscal com ênfase na Reforma Tributária\", no valor de R$ 428.360,00 (quatrocentos e vinte e oito mil, trezentos e sessenta reais)), conforme disposto na Previsão de Receita do Plano de Trabalho aprovado.",
       "Link PNCP": "https://pncp.gov.br/app/editais/33004540000100/2026/69",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -216,6 +228,7 @@
       "Objeto": "1. Tijolo, Material: Barro Cozido,Tipo: Maciço, Comprimento: 21, Largura: 10, Espessura: 5,50,  Cor:  Vermelha, Aplicação: Construção Civil.\n2. Argamassa Refrataria - Componentes: Argila Refratária,  Sílica, Cimento Refratário E, Uso: Altas Temperaturas, Aplicação: Churrasqueiras, Lareiras, Fornos E Fogões A Lenha.\n3. Tipo Madeira: Perobinha, Formato: Viga, Comprimento: 6, Largura: 16, Espessura: 6",
       "Link PNCP": "https://pncp.gov.br/app/editais/00394452000103/2026/12334",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-07-03 08:00"
     },
     {
@@ -228,8 +241,9 @@
       "Data Publicação": "2026-06-28",
       "Processo": "PG-SESC-2026/008",
       "Objeto": "Prestação de serviços contínuos de manutenção predial preventiva e corretiva civil, hidráulica e pintura para o complexo cultural do SESC Arsenal em Cuiabá.",
-      "Link PNCP": "https://www.sescmt.com.br/licitacoes/pg-008-2026",
+      "Link PNCP": "https://transparencia-mt.sesc.com.br",
       "Origem": "🏢 Sistema S",
+      "Alimentador": "Sistema S (Sesi/Senai/Sesc/Sebrae)",
       "Encerramento Proposta": ""
     },
     {
@@ -242,8 +256,9 @@
       "Data Publicação": "2026-06-25",
       "Processo": "ALV-VG-2026/0820",
       "Objeto": "[Rodovia Mario Andreazza] Execução de pátio em concreto armado usinado, drenagem superficial e muretas de contenção para novo posto de combustíveis. Área: 1.600,00 m². Local: Rodovia Mario Andreazza, VG.",
-      "Link PNCP": "https://diariomunicipal.org/mt/amm/alvara-vg-0820-2026",
+      "Link PNCP": "https://diariomunicipal.org/mt/amm/",
       "Origem": "🏗️ Obra Privada (Alvará)",
+      "Alimentador": "Diário Oficial (Alvarás Cuiabá/VG)",
       "Encerramento Proposta": ""
     },
     {
@@ -258,6 +273,7 @@
       "Objeto": "Contratação de empresa especializada para prestação de serviços de desinstalação de sistema antigo e instalação de novo Sistema de Climatização de Teto para veículo tipo Micro-ônibus, com fornecimento integral do equipamento e insumos.",
       "Link PNCP": "https://pncp.gov.br/app/editais/00348003000110/2026/429",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-06-30 08:00"
     },
     {
@@ -270,8 +286,9 @@
       "Data Publicação": "2026-06-18",
       "Processo": "LIC-SENAI-2026/031",
       "Objeto": "Construção de galpão anexo em estrutura pré-moldada de concreto e piso industrial para ampliação da oficina de maquinários pesados da Unidade Integrada SENAI Rondonópolis.",
-      "Link PNCP": "https://licitacoes.portaldaindustria.com.br/fiemt/lic-031-2026",
+      "Link PNCP": "https://compras.sfiemt.ind.br/Default.aspx",
       "Origem": "🏢 Sistema S",
+      "Alimentador": "Sistema S (Sesi/Senai/Sesc/Sebrae)",
       "Encerramento Proposta": ""
     },
     {
@@ -284,8 +301,9 @@
       "Data Publicação": "2026-06-12",
       "Processo": "ALV-CBA-2026/1420",
       "Objeto": "[Jardim Cuiabá] Reforma geral da portaria social, cobertura metálica de acesso e impermeabilização de calhas do condomínio. Local: Bairro Jardim Cuiabá, Cuiabá-MT.",
-      "Link PNCP": "https://gazetamunicipal.cuiaba.mt.gov.br/edicoes/alvara-1420-2026",
+      "Link PNCP": "https://gazetamunicipal.cuiaba.mt.gov.br/",
       "Origem": "🏗️ Obra Privada (Alvará)",
+      "Alimentador": "Diário Oficial (Alvarás Cuiabá/VG)",
       "Encerramento Proposta": ""
     },
     {
@@ -300,6 +318,7 @@
       "Objeto": "Contratação de empresa especializada para execução de serviços comuns de engenharia destinados à manutenção predial corretiva e preventiva de Próprios Nacionais Residenciais (PNR) da Agência Fluvial de Cáceres.",
       "Link PNCP": "https://pncp.gov.br/app/editais/00394502000144/2026/5960",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -314,6 +333,7 @@
       "Objeto": "Contratação de empresa para prestação de serviço técnico especializado de apoio à fiscalização de obras e serviços de engenharia para atender as demandas do IFMT - Campus Juína",
       "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2026/180",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-06-11 08:00"
     },
     {
@@ -328,6 +348,7 @@
       "Objeto": "Fornecer sistemas de climatização do tipo VRF, compreendendo unidades condensadoras, unidades evaporadoras e acessórios necessários para atender à Sede das Promotorias de Justiça da Capital, conforme condições e exigências estabelecidas no Termo de Referência.",
       "Link PNCP": "https://pncp.gov.br/app/editais/14921092000157/2026/81",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -342,6 +363,7 @@
       "Objeto": "Materiais de construção destinados à execução de reparos, recomposição e conservação de estruturas prediais.",
       "Link PNCP": "https://pncp.gov.br/app/editais/00394452000103/2026/10772",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-06-08 12:00"
     },
     {
@@ -356,6 +378,7 @@
       "Objeto": "Execução  de reforma  e  modernização  da cobertura  da  Sede  das  Promotorias  da  Capital,  incluindo  instalação  de  estrutura  metálica, plataformas  metálicas, forro do  3º andar,  vedação  da pele  de  vidro  horizontal e  adequação das  instalações  elétricas  dos  circuitos  de  climatização,conforme  condições  e  exigências estabelecidas neste instrumento.",
       "Link PNCP": "https://pncp.gov.br/app/editais/14921092000157/2026/77",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-06-03 08:00"
     },
     {
@@ -370,6 +393,7 @@
       "Objeto": "Contratação de empresa especializada com fornecimento de mão de obra para serviços de  Reinstalação de porta giratória com detector de metais em caráter de urgência, visando garantir a continuidade dos serviços judiciários e a segurança das instalações  após a reforma de pisos da Subseção Judiciária de Cáceres",
       "Link PNCP": "https://pncp.gov.br/app/editais/00508903000188/2026/1014",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -384,6 +408,7 @@
       "Objeto": "Contratação de empresa especializada para execução de serviços comuns de engenharia destinados à manutenção predial corretiva e preventiva de Próprios Nacionais Residenciais (PNR) da Agência Fluvial de Cáceres.",
       "Link PNCP": "https://pncp.gov.br/app/editais/00394502000144/2026/5283",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-06-02 09:00"
     },
     {
@@ -396,8 +421,9 @@
       "Data Publicação": "2026-05-22",
       "Processo": "COT-SEBRAE-2026/015",
       "Objeto": "Reforma e modernização dos banheiros acessíveis e salas de atendimento do edifício sede do SEBRAE Mato Grosso (Av. CPA, Cuiabá).",
-      "Link PNCP": "https://sebrae.com.br/sites/PortalSebrae/licitacoes/sebrae-mt-015",
+      "Link PNCP": "https://sebrae.com.br/sites/PortalSebrae/licitacoes",
       "Origem": "🏢 Sistema S",
+      "Alimentador": "Sistema S (Sesi/Senai/Sesc/Sebrae)",
       "Encerramento Proposta": ""
     },
     {
@@ -412,6 +438,7 @@
       "Objeto": "Serviços de tapeçaria e reforma de mobiliário para a restauração completa dos estofados da sede da Embrapa Agrossilvipastoril. O serviço compreende a substituição de revestimentos e preenchimento com espuma.",
       "Link PNCP": "https://pncp.gov.br/app/editais/00348003000110/2026/229",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -426,6 +453,7 @@
       "Objeto": "Contratação de empresa especializada em engenharia para elaboração dos projetos básico e executivo da futura Inspetoria do CREA-MT em Alta Floresta/MT, incluindo levantamento planialtimétrico, planilha orçamentária, memoriais descritivos, compatibilização de projetos e aprovação junto aos órgãos competentes, contemplando as disciplinas de arquitetura, estrutural, instalações elétricas, hidrossanitárias, drenagem, lógica e telecomunicações, climatização entre outros.",
       "Link PNCP": "https://pncp.gov.br/app/editais/03471158000138/2026/22",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-05-25 09:00"
     },
     {
@@ -438,8 +466,9 @@
       "Data Publicação": "2026-05-14",
       "Processo": "LIC-SESC-2026/027",
       "Objeto": "Adequação das instalações elétricas, cabeamento estruturado e instalação de usina solar fotovoltaica no Sesc Pantanal Hotel Poconé/Barão de Melgaço.",
-      "Link PNCP": "https://www.sescmt.com.br/licitacoes/lic-027-2026",
+      "Link PNCP": "https://transparencia-mt.sesc.com.br",
       "Origem": "🏢 Sistema S",
+      "Alimentador": "Sistema S (Sesi/Senai/Sesc/Sebrae)",
       "Encerramento Proposta": ""
     },
     {
@@ -454,6 +483,7 @@
       "Objeto": "Contratação de serviço de engenharia para a implantação completa do Sistema de Segurança Contra Incêndio e Pânico na sede da Superintendência Regional do DNIT/MT, incluindo fornecimento integral de materiais, mão de obra e a obtenção do Alvará de Segurança Contra Incêndio e Pânico (ASCIP) junto ao Corpo de Bombeiros Militar de Mato Grosso.",
       "Link PNCP": "https://pncp.gov.br/app/editais/04892707002235/2026/24",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-05-22 09:00"
     },
     {
@@ -468,6 +498,7 @@
       "Objeto": "1. Manutenção bebedouro da guarda; troca de motor; higienização; troca do dreno; reparo fiação elétrica; troca flange ½ do bebedouro; rebites na tampa.\n2. Manutenção bebedouro da 1ª Bateria de Obuses; troca do ventilador; higienização; rebites na tampa.\n3. Manutenção bebedouro do PRM; troca do ventilador; higienização; rebites na tampa.",
       "Link PNCP": "https://pncp.gov.br/app/editais/00394452000103/2026/9149",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-05-14 08:00"
     },
     {
@@ -482,6 +513,7 @@
       "Objeto": "Cortador manual de bloco de concreto tipo paver intertravado, para utilização em obras de pavimentação, com sistema de corte por alavanca e lâminas/elementos de corte apropriados ao material (concreto). Capacidade de corte compatível com pavers com altura/espessura mínima de 5 cm e máxima de 12 cm, ou superior Largura útil/capacidade \ndimensional: capacidade de corte para blocos com largura de até 33 cm, ou superior. Construção: estrutura robusta em material metálico.",
       "Link PNCP": "https://pncp.gov.br/app/editais/00394452000103/2026/8886",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-05-11 08:00"
     },
     {
@@ -496,6 +528,7 @@
       "Objeto": "1. Cafeteira Elétrica Capacidade: 1,50L, Voltagem: 220 V, Normas Técnicas: Aisi 304, Características Adicionais: Compacta/ Café Expresso E Capuccino/ Moedor/ Reserva",
       "Link PNCP": "https://pncp.gov.br/app/editais/00394452000103/2026/8783",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-05-08 08:00"
     },
     {
@@ -510,6 +543,7 @@
       "Objeto": "Contratação de pessoa Jurídica para prestação de serviços terceirizados de natureza continuada de limpeza, conservação predial, asseio, com fornecimento de mão de obra em dedicação exclusiva, uniformes, materiais, utensílios e equipamentos para atendimento ao IFMT- Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso - Campus Sinop.",
       "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2026/120",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -524,6 +558,7 @@
       "Objeto": "Serviço de limpeza, asseio, conservação predial e copeiragem, com sede em Cuiabá, e desempenhar serviços na sede do CREFITO-9 em Cuiabá-MT, com fornecimento de mão de obra em regime de dedicação exclusiva de 01 (um) funcionário. Escala de trabalho: 30h (trinta) horas semanais, sendo: de segunda-feira à sexta-feira das 07:30 - 13:45 (com 15 minutos de intervalo) .Rua H, Quadra 04, Setor A, Lote 02, Centro Político Administrativo, Cuiabá - MT, CEP 78049-911",
       "Link PNCP": "https://pncp.gov.br/app/editais/00577473000156/2026/4",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -538,6 +573,7 @@
       "Objeto": "Fornecimento de mola piso hidráulica em aço inox, capacidade para 180 kg, com tampa, eixo e dobradiça para a Subseção Judiciária de Cáceres - Mato Grosso",
       "Link PNCP": "https://pncp.gov.br/app/editais/00508903000188/2026/563",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -552,6 +588,7 @@
       "Objeto": "Contratação de empresa especializada para elaboração de projetos de arquitetura, arquitetura de interiores e projetos complementares, incluindo levantamento técnico, identificação de patologias existentes na edificação, consolidação de projetos já executados, elaboração de memoriais descritivos, orçamento e demais documentos técnicos necessários para subsidiar a futura licitação das obras de manutenção, adequação e reforma da sede do CRA-MT.",
       "Link PNCP": "https://pncp.gov.br/app/editais/26562892000108/2026/6",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -566,6 +603,7 @@
       "Objeto": "Serviço de Engenharia para Apoio/consultoria na Execução de Obras e Projetos de Correção e Melhorias na Rede Elétrica para o IFMT Campus Sorriso Sede e Fazenda Experimental.",
       "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2026/93",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-03-30 09:00"
     },
     {
@@ -580,6 +618,7 @@
       "Objeto": "Aquisição materiais de construção e materiais elétricos para atender as demandas do IFMT - Campus Juína",
       "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2026/83",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-03-20 08:00"
     },
     {
@@ -594,6 +633,7 @@
       "Objeto": "Cafeteira Elétrica Material: Aço Inox Aisi 304, Aplicação: Industrial, Capacidade: 8 L, Voltagem: 220 V, Características Adicionais: Caldeira 14l Água, Termostato, Nível E Torneira, Potência: 1.300",
       "Link PNCP": "https://pncp.gov.br/app/editais/00394452000103/2026/5508",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-03-16 08:00"
     },
     {
@@ -608,6 +648,7 @@
       "Objeto": "Contratação de serviços de engenharia para Elaboração/Análise de Projeto de reforma e adequação sede e , nos termos da tabela abaixo, conforme condições estudo de viabilidade junto a Prefeitura de Cuiabá/MT e exigências estabelecidas neste instrumento.",
       "Link PNCP": "https://pncp.gov.br/app/editais/23411944000157/2026/8",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-03-17 08:00"
     },
     {
@@ -622,6 +663,7 @@
       "Objeto": "Aquisição emergencial de cabos elétricos e conectores para restabelecimento da energia elétrica no IFMT – Campus Cáceres Professor Olegário Baldo.",
       "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2026/73",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -636,6 +678,7 @@
       "Objeto": "Contratação de empresa especializada para execução de serviços comuns de engenharia, de natureza não contínua, destinados à Manutenção corretiva da cobertura, adequação do sistema de drenagem pluvial, bem como à impermeabilização de cisterna de água IFMT Campus Rondonópolis.",
       "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2026/59",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-03-04 08:00"
     },
     {
@@ -650,6 +693,7 @@
       "Objeto": "Contratação de empresa especializada para prestação de serviços de engenharia visando a inspeção técnica, emissão de laudo e elaboração de projetos de reforma elétrica (Baixa Tensão, Média Tensão) para o IFMT Campus Cáceres.",
       "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2026/55",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": "2026-03-10 08:00"
     },
     {
@@ -664,6 +708,7 @@
       "Objeto": "Consumo estimado do serviço de energia elétrica para programação orçamentária e publicação da despesa em 2026.",
       "Link PNCP": "https://pncp.gov.br/app/editais/15126437000305/2026/422",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -678,6 +723,7 @@
       "Objeto": "Reparo emergencial da parte elétrica dos alojamentos do IFMT Campus Confresa, com fornecimento de material.",
       "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2026/21",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     },
     {
@@ -692,6 +738,7 @@
       "Objeto": "Substituição de dois disjuntores no prédio que abriga o IPHAN-MT para reestabelecimento da energia elétrica.",
       "Link PNCP": "https://pncp.gov.br/app/editais/26474056000171/2026/33",
       "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)",
       "Encerramento Proposta": ""
     }
   ]

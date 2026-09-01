@@ -41,7 +41,7 @@ class RadarSistemaS:
                 "Data Publicação": "2026-07-15",
                 "Processo": "LIC-SESI-2026/042",
                 "Objeto": "Contratação de empresa de engenharia para execução de obras de reforma da cobertura metálica, impermeabilização de calhas e revitalização da fachada da Unidade SESI Saúde Cuiabá.",
-                "Link PNCP": "https://licitacoes.portaldaindustria.com.br/fiemt/lic-042-2026",
+                "Link PNCP": "https://compras.sfiemt.ind.br/Default.aspx",
                 "Origem": "🏢 Sistema S"
             },
             {
@@ -54,7 +54,7 @@ class RadarSistemaS:
                 "Data Publicação": "2026-07-10",
                 "Processo": "DISP-SENAI-2026/019",
                 "Objeto": "Reforma e adequação do sistema de climatização e ventilação mecânica dos laboratórios práticos de mecânica e soldagem da Faculdade de Tecnologia SENAI Várzea Grande.",
-                "Link PNCP": "https://licitacoes.portaldaindustria.com.br/fiemt/disp-019-2026",
+                "Link PNCP": "https://compras.sfiemt.ind.br/Default.aspx",
                 "Origem": "🏢 Sistema S"
             },
             {
@@ -67,7 +67,7 @@ class RadarSistemaS:
                 "Data Publicação": "2026-06-28",
                 "Processo": "PG-SESC-2026/008",
                 "Objeto": "Prestação de serviços contínuos de manutenção predial preventiva e corretiva civil, hidráulica e pintura para o complexo cultural do SESC Arsenal em Cuiabá.",
-                "Link PNCP": "https://www.sescmt.com.br/licitacoes/pg-008-2026",
+                "Link PNCP": "https://transparencia-mt.sesc.com.br",
                 "Origem": "🏢 Sistema S"
             },
             {
@@ -80,7 +80,7 @@ class RadarSistemaS:
                 "Data Publicação": "2026-06-18",
                 "Processo": "LIC-SENAI-2026/031",
                 "Objeto": "Construção de galpão anexo em estrutura pré-moldada de concreto e piso industrial para ampliação da oficina de maquinários pesados da Unidade Integrada SENAI Rondonópolis.",
-                "Link PNCP": "https://licitacoes.portaldaindustria.com.br/fiemt/lic-031-2026",
+                "Link PNCP": "https://compras.sfiemt.ind.br/Default.aspx",
                 "Origem": "🏢 Sistema S"
             },
             {
@@ -93,7 +93,7 @@ class RadarSistemaS:
                 "Data Publicação": "2026-05-22",
                 "Processo": "COT-SEBRAE-2026/015",
                 "Objeto": "Reforma e modernização dos banheiros acessíveis e salas de atendimento do edifício sede do SEBRAE Mato Grosso (Av. CPA, Cuiabá).",
-                "Link PNCP": "https://sebrae.com.br/sites/PortalSebrae/licitacoes/sebrae-mt-015",
+                "Link PNCP": "https://sebrae.com.br/sites/PortalSebrae/licitacoes",
                 "Origem": "🏢 Sistema S"
             },
             {
@@ -106,7 +106,7 @@ class RadarSistemaS:
                 "Data Publicação": "2026-05-14",
                 "Processo": "LIC-SESC-2026/027",
                 "Objeto": "Adequação das instalações elétricas, cabeamento estruturado e instalação de usina solar fotovoltaica no Sesc Pantanal Hotel Poconé/Barão de Melgaço.",
-                "Link PNCP": "https://www.sescmt.com.br/licitacoes/lic-027-2026",
+                "Link PNCP": "https://transparencia-mt.sesc.com.br",
                 "Origem": "🏢 Sistema S"
             }
         ]
