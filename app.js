@@ -395,11 +395,11 @@ function renderizarKanban() {
         <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">${item['Município']} • ${item['Categoria']}</div>
         <div class="kanban-card-val">${formatarMoeda(item['Valor Estimado (R$)'])}</div>
         ${nota ? `<div class="kanban-notes-preview"><i class="bi bi-chat-text"></i> ${nota}</div>` : ''}
-        <div style="display: flex; justify-content: space-between; margin-top: 10px; gap: 4px;">
-          <a href="${item['Link PNCP']}" target="_blank" style="font-size: 0.75rem; color: var(--primary); text-decoration: none;">
-            <i class="bi bi-box-arrow-up-right"></i> PNCP
+        <div style="display: flex; justify-content: space-between; margin-top: 10px; gap: 4px; align-items: center;">
+          <a href="${item['Link PNCP']}" target="_blank" rel="noopener noreferrer" style="font-size: 0.75rem; color: var(--primary); text-decoration: none; font-weight: 600;">
+            <i class="bi bi-box-arrow-up-right"></i> ${item['Origem']?.includes('Sistema S') ? 'Edital S' : (item['Origem']?.includes('Privada') ? 'Diário' : 'PNCP')}
           </a>
-          <button class="btn-icon" style="width: 24px; height: 24px; font-size: 11px;" onclick="abrirModalAnotacoes('${item._id}')">
+          <button class="btn-icon" style="width: 24px; height: 24px; font-size: 11px;" onclick="abrirModalAnotacoes('${item._id}')" title="Anotações internas">
             <i class="bi bi-pencil"></i>
           </button>
         </div>
@@ -437,6 +437,13 @@ function abrirModalAnotacoes(id) {
   document.getElementById('modalObjeto').textContent = itemAtualModal['Objeto'] || '';
   document.getElementById('modalValor').textContent = formatarMoeda(itemAtualModal['Valor Estimado (R$)']);
   document.getElementById('textareaNotas').value = AppState.anotacoes[id] || '';
+
+  const modalLink = document.getElementById('modalLinkEdital');
+  if (modalLink) {
+    modalLink.href = itemAtualModal['Link PNCP'] || '#';
+    const label = itemAtualModal['Origem']?.includes('Sistema S') ? 'Portal de Compras S' : (itemAtualModal['Origem']?.includes('Privada') ? 'Diário Oficial' : 'Edital PNCP');
+    modalLink.innerHTML = `<i class="bi bi-box-arrow-up-right"></i> ${label}`;
+  }
 
   document.getElementById('modalBackdrop').classList.add('show');
 }
@@ -606,11 +613,13 @@ function recalcularBDI() {
 function exportarParaCSV() {
   if (!AppState.filtrados.length) return alert('Nenhum edital na lista para exportar.');
 
-  const headers = ['Data Publicação', 'Município', 'Categoria', 'Modalidade', 'Órgão', 'Valor Estimado (R$)', 'Processo', 'Objeto', 'Link PNCP'];
+  const headers = ['Origem', 'Alimentador', 'Data Publicação', 'Município', 'Categoria', 'Modalidade', 'Contratante / Órgão', 'Valor Estimado (R$)', 'Processo', 'Objeto', 'Link Oficial'];
   const linhas = [headers.join(';')];
 
   AppState.filtrados.forEach(item => {
     const linha = [
+      `"${item['Origem'] || ''}"`,
+      `"${item['Alimentador'] || ''}"`,
       `"${item['Data Publicação'] || ''}"`,
       `"${item['Município'] || ''}"`,
       `"${item['Categoria'] || ''}"`,
@@ -618,7 +627,7 @@ function exportarParaCSV() {
       `"${(item['Órgão'] || '').replace(/"/g, '""')}"`,
       `"${item['Valor Estimado (R$)'] || 0}"`,
       `"${item['Processo'] || ''}"`,
-      `"${(item['Objeto'] || '').replace(/"/g, '""')}"`,
+      `"${(item['Objeto'] || '').replace(/"/g, '""').replace(/[\r\n]+/g, ' ')}"`,
       `"${item['Link PNCP'] || ''}"`
     ];
     linhas.push(linha.join(';'));

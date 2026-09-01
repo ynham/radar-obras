@@ -43,12 +43,45 @@ class handler(BaseHTTPRequestHandler):
             todas = ops_gov + ops_s + ops_alv
             todas.sort(key=lambda x: str(x.get("Data Publicação", "")), reverse=True)
             
+            total_gov = len([d for d in todas if "Governo" in str(d.get("Origem", "")) or "PNCP" in str(d.get("Alimentador", ""))])
+            total_sis = len([d for d in todas if "Sistema S" in str(d.get("Origem", "")) or "Sistema S" in str(d.get("Alimentador", ""))])
+            total_alv = len([d for d in todas if "Privada" in str(d.get("Origem", "")) or "Alvará" in str(d.get("Alimentador", ""))])
+
             resposta = {
                 "sucesso": True,
                 "mensagem": "Varredura executada com sucesso!",
                 "metadados": {
                     "ultima_atualizacao": datetime.now().strftime("%d/%m/%Y %H:%M"),
-                    "total_geral": len(todas)
+                    "total_geral": len(todas),
+                    "alimentadores": [
+                        {
+                            "id": "pncp",
+                            "nome": "🏛️ PNCP / Compras.gov",
+                            "tipo": "API Oficial Federal e Estadual",
+                            "status": "Online & Monitorando",
+                            "frequencia": "Diário (07:00)",
+                            "total": total_gov,
+                            "url_fonte": "https://pncp.gov.br"
+                        },
+                        {
+                            "id": "sistema_s",
+                            "nome": "🏢 Sistema S (Sesi, Senai, Sesc, Sebrae)",
+                            "tipo": "Portais de Compras Paraestatais",
+                            "status": "Online & Monitorando",
+                            "frequencia": "Diário (07:00)",
+                            "total": total_sis,
+                            "url_fonte": "https://compras.sfiemt.ind.br/Default.aspx"
+                        },
+                        {
+                            "id": "alvaras",
+                            "nome": "🏗️ Diários Oficiais (Alvarás Cuiabá/VG)",
+                            "tipo": "Atos de Aprovação de Projetos",
+                            "status": "Online & Monitorando",
+                            "frequencia": "Diário (07:00)",
+                            "total": total_alv,
+                            "url_fonte": "https://gazetamunicipal.cuiaba.mt.gov.br"
+                        }
+                    ]
                 },
                 "oportunidades": todas
             }
