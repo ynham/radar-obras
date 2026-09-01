@@ -112,6 +112,7 @@ class RadarSistemaS:
         ]
 
         for ed in editais_sistema_s:
+            ed["Alimentador"] = "Sistema S (Sesi/Senai/Sesc/Sebrae)"
             oportunidades.append(ed)
 
         print(f"-> Sistema S: {len(oportunidades)} editais qualificados de obras/reformas encontrados.")

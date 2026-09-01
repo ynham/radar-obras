@@ -120,7 +120,8 @@ class RadarAlvarasMT:
                 "Processo": item["NumeroAlvara"],
                 "Objeto": f"[{item['Bairro']}] {item['Objeto']}",
                 "Link PNCP": item["LinkOficial"],
-                "Origem": "🏗️ Obra Privada (Alvará)"
+                "Origem": "🏗️ Obra Privada (Alvará)",
+                "Alimentador": "Diário Oficial (Alvarás Cuiabá/VG)"
             })
 
         print(f"-> Alvarás: {len(oportunidades)} novas obras e reformas privadas identificadas em Cuiabá/VG.")

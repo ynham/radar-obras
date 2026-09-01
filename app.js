@@ -53,7 +53,7 @@ function configurarEventosUI() {
 
   // Filtros em Tempo Real
   document.getElementById('filtroTexto').addEventListener('input', debounce(aplicarFiltros, 250));
-  document.getElementById('filtroOrigem').addEventListener('change', aplicarFiltros);
+  document.getElementById('filtroAlimentador').addEventListener('change', aplicarFiltros);
   document.getElementById('filtroRegiao').addEventListener('change', aplicarFiltros);
   document.getElementById('filtroCategoria').addEventListener('change', aplicarFiltros);
   document.getElementById('filtroPorte').addEventListener('change', aplicarFiltros);
@@ -92,25 +92,42 @@ function aplicarTema(tema) {
   }
 }
 
-// Carregar Dados da Base (JSON com Fallback Local)
+// Carregar Dados da Base (JSON com Metadados de Alimentadores e Fallback)
 async function carregarDados() {
+  let payload = null;
   try {
     const res = await fetch('./dados_obras.json');
     if (!res.ok) throw new Error('Não foi possível carregar dados_obras.json');
-    AppState.dados = await res.json();
+    payload = await res.json();
   } catch (err) {
     console.warn('Carregamento via fetch local falhou (possível file:// protocol). Usando fallback.', err);
-    if (window.DADOS_FALLBACK && Array.isArray(window.DADOS_FALLBACK)) {
-      AppState.dados = window.DADOS_FALLBACK;
+    if (window.DADOS_FALLBACK) {
+      payload = window.DADOS_FALLBACK;
     } else {
-      AppState.dados = [];
+      payload = [];
     }
+  }
+
+  if (Array.isArray(payload)) {
+    AppState.dados = payload;
+    AppState.metadados = {};
+  } else if (payload && payload.oportunidades) {
+    AppState.dados = payload.oportunidades;
+    AppState.metadados = payload.metadados || {};
+  } else {
+    AppState.dados = [];
+    AppState.metadados = {};
+  }
+
+  // Atualizar data da última varredura no cabeçalho se disponível
+  const txtData = document.getElementById('txtUltimaVarredura');
+  if (txtData && AppState.metadados.ultima_atualizacao) {
+    txtData.textContent = `Última Varredura: ${AppState.metadados.ultima_atualizacao}`;
   }
 
   // Gera IDs únicos para cada edital
   AppState.dados.forEach((item, index) => {
     item._id = `edital_${index}_${(item.Processo || '').replace(/[^a-zA-Z0-9]/g, '')}`;
-    // Se não tiver status no kanban, define como 'novas'
     if (!AppState.kanban[item._id]) {
       AppState.kanban[item._id] = 'novas';
     }
@@ -144,17 +161,20 @@ function renderizarAbaAtual() {
   document.getElementById('tabKanban').style.display = AppState.abaAtiva === 'kanban' ? 'block' : 'none';
   document.getElementById('tabCharts').style.display = AppState.abaAtiva === 'charts' ? 'block' : 'none';
   document.getElementById('tabCalculator').style.display = AppState.abaAtiva === 'calculator' ? 'block' : 'none';
+  const tabFeeders = document.getElementById('tabFeeders');
+  if (tabFeeders) tabFeeders.style.display = AppState.abaAtiva === 'feeders' ? 'block' : 'none';
 
   if (AppState.abaAtiva === 'radar') renderizarRadar();
   if (AppState.abaAtiva === 'kanban') renderizarKanban();
   if (AppState.abaAtiva === 'charts') renderizarGraficos();
   if (AppState.abaAtiva === 'calculator') popularCalculadora();
+  if (AppState.abaAtiva === 'feeders') renderizarAlimentadores();
 }
 
 // Filtros do Radar
 function aplicarFiltros() {
   const busca = (document.getElementById('filtroTexto').value || '').toLowerCase();
-  const origem = document.getElementById('filtroOrigem').value;
+  const alimentador = document.getElementById('filtroAlimentador').value;
   const regiao = document.getElementById('filtroRegiao').value;
   const categoria = document.getElementById('filtroCategoria').value.toLowerCase();
   const porte = parseFloat(document.getElementById('filtroPorte').value) || 0;
@@ -167,7 +187,10 @@ function aplicarFiltros() {
       (item['Município'] && item['Município'].toLowerCase().includes(busca)) ||
       (item['Processo'] && String(item['Processo']).toLowerCase().includes(busca));
 
-    const matchOrigem = !origem || (item['Origem'] && item['Origem'].includes(origem));
+    const matchAlimentador = !alimentador || 
+      (item['Alimentador'] && item['Alimentador'].toLowerCase().includes(alimentador.toLowerCase())) ||
+      (item['Origem'] && item['Origem'].toLowerCase().includes(alimentador.toLowerCase()));
+
     const matchRegiao = !regiao || item['Prioritária (Cuiabá/VG)'] === regiao;
     const matchCategoria = !categoria || (item['Categoria'] && item['Categoria'].toLowerCase().includes(categoria));
     
@@ -177,7 +200,7 @@ function aplicarFiltros() {
     if (porte === 500000) matchPorte = val > 120000 && val <= 500000;
     if (porte === 1000000) matchPorte = val > 500000;
 
-    return matchBusca && matchOrigem && matchRegiao && matchCategoria && matchPorte;
+    return matchBusca && matchAlimentador && matchRegiao && matchCategoria && matchPorte;
   });
 
   // Ordenação
@@ -618,4 +641,132 @@ function debounce(fn, delay) {
     clearTimeout(timer);
     timer = setTimeout(() => fn.apply(this, args), delay);
   };
+}
+
+// ==========================================================================
+// Central de Alimentadores (Feeders Hub)
+// ==========================================================================
+
+function renderizarAlimentadores() {
+  const grid = document.getElementById('gridFeeders');
+  if (!grid) return;
+
+  const totalGov = AppState.dados.filter(d => (d['Origem'] || '').includes('Governo') || (d['Alimentador'] || '').includes('PNCP')).length;
+  const totalSis = AppState.dados.filter(d => (d['Origem'] || '').includes('Sistema S') || (d['Alimentador'] || '').includes('Sistema S')).length;
+  const totalAlv = AppState.dados.filter(d => (d['Origem'] || '').includes('Privada') || (d['Alimentador'] || '').includes('Alvará')).length;
+
+  const alimentadores = [
+    {
+      id: 'pncp',
+      classe: 'card-pncp',
+      nome: '🏛️ PNCP / Compras.gov (Governo)',
+      tipo: 'API Oficial Federal e Estadual',
+      status: 'Online & Monitorando',
+      frequencia: 'Diário às 07:00 (Automático)',
+      total: totalGov,
+      url: 'https://pncp.gov.br',
+      filtroValor: 'PNCP',
+      descricao: 'Alimentador que consulta a API nacional de Compras Públicas (Lei 14.133/2021) capturando editais de Mato Grosso de prefeituras, órgãos federais e autarquias.'
+    },
+    {
+      id: 'sistema_s',
+      classe: 'card-sistema-s',
+      nome: '🏢 Sistema S (Sesi / Senai / Sesc / Sebrae)',
+      tipo: 'Portais de Compras da Indústria e Comércio',
+      status: 'Online & Monitorando',
+      frequencia: 'Diário às 07:00 (Automático)',
+      total: totalSis,
+      url: 'https://licitacoes.portaldaindustria.com.br',
+      filtroValor: 'Sistema S',
+      descricao: 'Alimentador que monitora os portais de compras do Sistema FIEMT (Sesi/Senai), Fecomércio (Sesc/Senac) e Sebrae-MT em busca de reformas, climatização e manutenção predial.'
+    },
+    {
+      id: 'alvaras',
+      classe: 'card-alvaras',
+      nome: '🏗️ Diários Oficiais (Alvarás Cuiabá/VG)',
+      tipo: 'Atos de Aprovação de Projetos (SMADUS/AMM)',
+      status: 'Online & Monitorando',
+      frequencia: 'Diário às 07:00 (Automático)',
+      total: totalAlv,
+      url: 'https://gazetamunicipal.cuiaba.mt.gov.br',
+      filtroValor: 'Diário Oficial',
+      descricao: 'Alimentador que monitora as concessões de alvarás de construção e reformas comerciais na Gazeta Municipal de Cuiabá e Diário Oficial de Várzea Grande, descobrindo a obra antes de começar.'
+    }
+  ];
+
+  grid.innerHTML = alimentadores.map(alv => `
+    <div class="feeder-card ${alv.classe}">
+      <div>
+        <div class="feeder-top">
+          <div>
+            <div class="feeder-title">${alv.nome}</div>
+            <div class="feeder-type">${alv.tipo}</div>
+          </div>
+          <span class="status-badge">
+            <span class="status-dot"></span> ${alv.status}
+          </span>
+        </div>
+
+        <p class="feeder-desc">${alv.descricao}</p>
+      </div>
+
+      <div>
+        <div class="feeder-metrics">
+          <div>
+            <div class="feeder-metric-label">Frequência</div>
+            <div style="font-size: 0.85rem; font-weight: 600; margin-top: 4px; color: var(--text-main);">
+              <i class="bi bi-clock-history"></i> ${alv.frequencia}
+            </div>
+          </div>
+          <div>
+            <div class="feeder-metric-label">Oportunidades Ativas</div>
+            <div class="feeder-metric-value" style="margin-top: 2px;">${alv.total}</div>
+          </div>
+        </div>
+
+        <div class="feeder-actions">
+          <button class="btn-primary" style="flex: 1; padding: 8px 12px; font-size: 0.8rem;" onclick="selecionarAlimentador('${alv.filtroValor}')">
+            <i class="bi bi-funnel"></i> Filtrar Obras deste Alimentador
+          </button>
+          <a href="${alv.url}" target="_blank" rel="noopener noreferrer" class="btn-edital" style="padding: 8px 12px; font-size: 0.8rem;" title="Abrir Fonte Oficial">
+            <i class="bi bi-box-arrow-up-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selecionarAlimentador(nomeAlimentador) {
+  // Define o valor do select de filtro
+  const select = document.getElementById('filtroAlimentador');
+  if (select) select.value = nomeAlimentador;
+
+  // Alterna para a aba Radar
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tabNavRadar').classList.add('active');
+  AppState.abaAtiva = 'radar';
+  renderizarAbaAtual();
+  aplicarFiltros();
+}
+
+function atualizarDadosFeeders() {
+  const btn = document.getElementById('btnSyncFeeders');
+  if (btn) {
+    btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Atualizando...';
+    btn.disabled = true;
+  }
+
+  setTimeout(async () => {
+    await carregarDados();
+    atualizarKPIs();
+    renderizarAlimentadores();
+    if (btn) {
+      btn.innerHTML = '<i class="bi bi-check-circle"></i> Alimentadores Atualizados!';
+      setTimeout(() => {
+        btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Atualizar Alimentadores';
+        btn.disabled = false;
+      }, 2000);
+    }
+  }, 600);
 }

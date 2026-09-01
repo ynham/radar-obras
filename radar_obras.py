@@ -153,7 +153,8 @@ class RadarLicitacoes:
                             "Objeto": objeto.strip(),
                             "Processo": item.get("processo") or "N/A",
                             "Link PNCP": link_pncp,
-                            "Origem": "🏛️ Governo / PNCP"
+                            "Origem": "🏛️ Governo / PNCP",
+                            "Alimentador": "PNCP / Compras.gov (Governo)"
                         })
                         total_mod += 1
                         
