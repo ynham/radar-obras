@@ -766,8 +766,8 @@ async function dispararVarreduraCompleta() {
   mostrarToast('🔄 Conectando aos alimentadores (PNCP, Sistema S e Alvarás) e varrendo novas obras...', 'info');
 
   try {
-    // 1. Chama o endpoint serverless /api no Vercel (que roda os alimentadores em Python na nuvem)
-    const res = await fetch('/api', { method: 'POST' });
+    // 1. Chama o endpoint serverless /api/atualizar no Vercel
+    const res = await fetch('/api/atualizar', { method: 'POST' });
     if (res.ok) {
       const data = await res.json();
       if (data.oportunidades && data.oportunidades.length > 0) {

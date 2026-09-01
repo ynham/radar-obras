@@ -31,7 +31,7 @@ class handler(BaseHTTPRequestHandler):
 
             radar_gov = RadarLicitacoes(uf="MT")
             hoje = datetime.now()
-            ini = hoje - timedelta(days=60)
+            ini = hoje - timedelta(days=240)
             ops_gov = radar_gov.buscar_oportunidades(data_inicio=ini.strftime("%Y-%m-%d"), data_fim=hoje.strftime("%Y-%m-%d"))
             
             radar_s = RadarSistemaS(uf="MT")

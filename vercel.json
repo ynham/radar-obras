@@ -1,6 +1,18 @@
 {
+  "version": 2,
   "cleanUrls": true,
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" }
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "styles.css", "use": "@vercel/static" },
+    { "src": "app.js", "use": "@vercel/static" },
+    { "src": "dados_obras.json", "use": "@vercel/static" },
+    { "src": "api/atualizar.py", "use": "@vercel/python" }
+  ],
+  "routes": [
+    { "src": "/api/atualizar", "dest": "/api/atualizar.py" },
+    { "src": "/styles.css", "dest": "/styles.css" },
+    { "src": "/app.js", "dest": "/app.js" },
+    { "src": "/dados_obras.json", "dest": "/dados_obras.json" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
