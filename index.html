@@ -35,6 +35,10 @@
     </div>
 
     <div class="nav-actions">
+      <button class="btn-sync-action" id="btnSyncNav" onclick="dispararVarreduraCompleta()" title="Consultar novos editais e alvarás agora">
+        <i class="bi bi-arrow-repeat" id="iconSyncNav"></i> <span>Atualizar Obras</span>
+      </button>
+
       <button class="btn-primary-action" id="btnExportar" title="Baixar planilha para Excel">
         <i class="bi bi-file-earmark-excel"></i> Exportar Base
       </button>
@@ -1070,10 +1074,11 @@ dimensional: capacidade de corte para blocos com largura de até 33 cm, ou super
       "Objeto": "Substituição de dois disjuntores no prédio que abriga o IPHAN-MT para reestabelecimento da energia elétrica.",
       "Link PNCP": "https://pncp.gov.br/app/editais/26474056000171/2026/33",
       "Origem": "🏛️ Governo / PNCP",
-      "Encerramento Proposta": NaN
+      "Encerramento Proposta": ""
     }
   ]
 };</script>
+  <div class="toast-container" id="toastContainer"></div>
   <script src="./app.js"></script>
 </body>
 </html>

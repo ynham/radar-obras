@@ -15,6 +15,7 @@ def gerar_dashboard(arquivo_excel="oportunidades_obras_mt.xlsx", arquivo_html="r
         return None
         
     df = pd.read_excel(arquivo_excel)
+    df = df.fillna("")
     dados = df.to_dict(orient="records")
     
     # Contabiliza alimentadores

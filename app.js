@@ -750,23 +750,84 @@ function selecionarAlimentador(nomeAlimentador) {
   aplicarFiltros();
 }
 
-function atualizarDadosFeeders() {
-  const btn = document.getElementById('btnSyncFeeders');
-  if (btn) {
-    btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Atualizando...';
-    btn.disabled = true;
+async function dispararVarreduraCompleta() {
+  const btnNav = document.getElementById('btnSyncNav');
+  const iconNav = document.getElementById('iconSyncNav');
+  const btnFeeders = document.getElementById('btnSyncFeeders');
+
+  // Ativa animação de carregamento nos botões
+  if (btnNav) btnNav.disabled = true;
+  if (iconNav) iconNav.classList.add('spin');
+  if (btnFeeders) {
+    btnFeeders.disabled = true;
+    btnFeeders.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Varrendo Alimentadores...';
   }
 
-  setTimeout(async () => {
-    await carregarDados();
-    atualizarKPIs();
-    renderizarAlimentadores();
-    if (btn) {
-      btn.innerHTML = '<i class="bi bi-check-circle"></i> Alimentadores Atualizados!';
-      setTimeout(() => {
-        btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Atualizar Alimentadores';
-        btn.disabled = false;
-      }, 2000);
+  mostrarToast('🔄 Conectando aos alimentadores (PNCP, Sistema S e Alvarás) e varrendo novas obras...', 'info');
+
+  try {
+    // 1. Chama o endpoint serverless /api no Vercel (que roda os alimentadores em Python na nuvem)
+    const res = await fetch('/api', { method: 'POST' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.oportunidades && data.oportunidades.length > 0) {
+        AppState.dados = data.oportunidades;
+        AppState.metadados = data.metadados || {};
+      }
+    } else {
+      await carregarDados();
     }
-  }, 600);
+  } catch (err) {
+    console.warn('API serverless indisponível ou offline. Recarregando base local.', err);
+    await carregarDados();
+  }
+
+  // Atualiza IDs e estado
+  AppState.dados.forEach((item, index) => {
+    item._id = `edital_${index}_${(item.Processo || '').replace(/[^a-zA-Z0-9]/g, '')}`;
+    if (!AppState.kanban[item._id]) AppState.kanban[item._id] = 'novas';
+  });
+
+  AppState.filtrados = [...AppState.dados];
+  atualizarKPIs();
+  renderizarAbaAtual();
+  if (AppState.abaAtiva === 'feeders') renderizarAlimentadores();
+
+  // Restaura botões
+  if (btnNav) btnNav.disabled = false;
+  if (iconNav) iconNav.classList.remove('spin');
+  if (btnFeeders) {
+    btnFeeders.innerHTML = '<i class="bi bi-check-circle"></i> Alimentadores Atualizados!';
+    setTimeout(() => {
+      btnFeeders.innerHTML = '<i class="bi bi-arrow-repeat"></i> Atualizar Alimentadores';
+      btnFeeders.disabled = false;
+    }, 2500);
+  }
+
+  mostrarToast(`✅ Varredura concluída! ${AppState.dados.length} oportunidades ativas consolidadas.`, 'success');
+}
+
+function atualizarDadosFeeders() {
+  return dispararVarreduraCompleta();
+}
+
+function mostrarToast(mensagem, tipo = 'info') {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = `toast ${tipo === 'success' ? 'toast-success' : 'toast-info'}`;
+  toast.innerHTML = `
+    <i class="bi ${tipo === 'success' ? 'bi-check-circle-fill' : 'bi-info-circle-fill'}" style="font-size: 1.1rem; color: ${tipo === 'success' ? 'var(--emerald)' : 'var(--primary)'};"></i>
+    <div>${mensagem}</div>
+  `;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(10px)';
+    setTimeout(() => toast.remove(), 400);
+  }, 4500);
 }
