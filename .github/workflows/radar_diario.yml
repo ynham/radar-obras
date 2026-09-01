@@ -1,0 +1,47 @@
+name: Radar Diario de Obras e Licitacoes
+
+on:
+  schedule:
+    # Executa todo dia de segunda a sexta às 10:00 UTC (07:00 da manhã no horário de Brasília/MT)
+    - cron: '0 10 * * 1-5'
+  workflow_dispatch: # Permite disparar manualmente com um clique
+
+jobs:
+  executar-radar:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # Para atualizar o GitHub Pages / repositório
+
+    steps:
+      - name: Baixar codigo do repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: |
+          pip install requests pandas openpyxl
+
+      - name: Executar Radar de Obras
+        env:
+          UF_ESTADO: "MT"
+          DIAS_RETROATIVOS: "15"
+          EMAIL_REMETENTE: ${{ secrets.EMAIL_REMETENTE }}
+          EMAIL_SENHA: ${{ secrets.EMAIL_SENHA }}
+          EMAIL_DESTINATARIO: ${{ secrets.EMAIL_DESTINATARIO }}
+          SMTP_SERVER: "smtp.gmail.com"
+          SMTP_PORT: "587"
+        run: |
+          python executar_radar_completo.py
+
+      - name: Publicar Painel Web Atualizado (GitHub Pages)
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          destination_dir: ./
+          keep_files: true

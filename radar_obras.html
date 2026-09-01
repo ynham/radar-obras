@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radar de Obras & Licitações | Antigravity PMO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #333;
+        }
+        .header-box {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .card-stat {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .card-stat:hover {
+            transform: translateY(-3px);
+        }
+        .badge-cuiaba {
+            background-color: #28a745;
+            color: white;
+            font-weight: 600;
+        }
+        .badge-cat {
+            background-color: #e9ecef;
+            color: #495057;
+            font-size: 0.85rem;
+            border: 1px solid #ced4da;
+        }
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        .btn-pncp {
+            background-color: #0d6efd;
+            color: white;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            padding: 5px 12px;
+            text-decoration: none;
+        }
+        .btn-pncp:hover {
+            background-color: #0b5ed7;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid py-4 px-md-5">
+    
+    <!-- Cabeçalho -->
+    <div class="header-box d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-radar"></i> Radar de Obras & Licitações (MT)</h2>
+            <p class="mb-0 text-white-50">Painel Estratégico de Monitoramento de Editais e Contratações de Engenharia</p>
+        </div>
+        <div class="text-end mt-2 mt-md-0">
+            <span class="badge bg-light text-dark px-3 py-2 fs-6"><i class="bi bi-building"></i> Construtora Familiar</span>
+        </div>
+    </div>
+
+    <!-- Estatísticas Rápidas -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card card-stat p-3 bg-white">
+                <div class="text-muted small fw-bold">TOTAL DE OPORTUNIDADES</div>
+                <div class="fs-3 fw-bold text-primary" id="totalOportunidades">34</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-stat p-3 bg-white">
+                <div class="text-muted small fw-bold">REGIÃO CUIABÁ / VG</div>
+                <div class="fs-3 fw-bold text-success" id="totalCuiaba">23</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-stat p-3 bg-white">
+                <div class="text-muted small fw-bold">ATÉ R$ 120 MIL (PEQUENO PORTE)</div>
+                <div class="fs-3 fw-bold text-warning" id="totalPequenoPorte">27</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-stat p-3 bg-white">
+                <div class="text-muted small fw-bold">VALOR TOTAL MAPEADO</div>
+                <div class="fs-3 fw-bold text-dark">R$ 125,711,595.58</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card p-3 mb-4 border-0 shadow-sm">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" id="filtroTexto" class="form-control" placeholder="Buscar por palavra no objeto ou órgão..." onkeyup="filtrarTabela()">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select id="filtroRegiao" class="form-select" onchange="filtrarTabela()">
+                    <option value="">Todas as Regiões</option>
+                    <option value="SIM">Apenas Cuiabá / Várzea Grande</option>
+                    <option value="NÃO">Apenas Interior MT</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="filtroCategoria" class="form-select" onchange="filtrarTabela()">
+                    <option value="">Todas as Categorias</option>
+                    <option value="Reforma">Reformas / Adequações</option>
+                    <option value="Construção">Construção Civil</option>
+                    <option value="Manutenção">Manutenção Predial</option>
+                    <option value="Instalações">Instalações / Climatização</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="filtroPorte" class="form-select" onchange="filtrarTabela()">
+                    <option value="">Todos os Valores</option>
+                    <option value="120000">Até R$ 120k (Ideal)</option>
+                    <option value="300000">Até R$ 300k</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela de Oportunidades -->
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="tabelaObras">
+                <thead class="table-light">
+                    <tr>
+                        <th>Data</th>
+                        <th>Município</th>
+                        <th>Categoria</th>
+                        <th>Órgão</th>
+                        <th>Objeto do Edital</th>
+                        <th class="text-end">Valor Estimado</th>
+                        <th class="text-center">Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabela">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const dadosObras = [{"Categoria": "Construção Civil", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 50432.51, "Modalidade": "Dispensa", "Data Publicação": "2024-08-20", "Encerramento Proposta": NaN, "Órgão": "MINISTERIO DA JUSTICA E SEGURANCA PUBLICA", "Objeto": "Construção da fundação para a Guarita Blindada que foi recentemente adquirida pela SR/PF/MT.", "Processo": "08320002906202433", "Link PNCP": "https://pncp.gov.br/app/editais/00394494000136/2024/895"}, {"Categoria": "Reforma / Adequação Predial", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 8200.0, "Modalidade": "Dispensa", "Data Publicação": "2024-08-19", "Encerramento Proposta": "2024-08-23 08:59", "Órgão": "MINISTERIO PUBLICO DA UNIAO", "Objeto": "Contratação de empresa especializada na prestação de serviço, com o fornecimento de todos os materiais necessários à execução, visando à reforma de mobiliário (mesa de auditório)", "Processo": "564/2024-45", "Link PNCP": "https://pncp.gov.br/app/editais/26989715000102/2024/1581"}, {"Categoria": "Manutenção Predial", "Município": "VÁRZEA GRANDE", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 306297.36, "Modalidade": "Dispensa", "Data Publicação": "2024-08-06", "Encerramento Proposta": NaN, "Órgão": "INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DE MATO GROSSO", "Objeto": "ontratação de empresa especializada para prestação dos serviços terceirizados de limpeza, asseio e conservação predial, com dedicação exclusiva de mão de obra, de natureza continuada, para o Campus Várzea Grande do Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso.\n\nCarga horária de 44 h semanal.", "Processo": "23749.001007.2024-86", "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2024/270"}, {"Categoria": "Construção Civil", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 0.0, "Modalidade": "Dispensa", "Data Publicação": "2024-07-31", "Encerramento Proposta": "2024-08-05 08:59", "Órgão": "CONSELHO REGIONAL DE ENGENHARIA E AGRONOMIA DE MATO GROSSO", "Objeto": "O presente instrumento tem por objeto a contratação de empresa para o serviço de aluguel de caçamba bota-fora para descarte de entulhos compreende o fornecimento, entrega, posicionamento, recolhimento e transporte de caçambas metálicas destinadas à coleta e destinação adequada de resíduos da construção civil, bem como resíduos vegetais", "Processo": "P20240342180", "Link PNCP": "https://pncp.gov.br/app/editais/03471158000138/2024/35"}, {"Categoria": "Reforma / Adequação Predial", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 19990.0, "Modalidade": "Dispensa", "Data Publicação": "2024-07-02", "Encerramento Proposta": NaN, "Órgão": "CONSELHO REGIONAL DE MEDICINA DO ESTADO DE MATO GROSSO", "Objeto": "A contratação de profissional liberal e/ou empresa especializada e habilitada para apresentação técnica e gráfica de projetos de reforma de arquitetura de interiores, seus respectivos projetos complementares e para o acompanhamento/supervisão das obras que serão realizadas na sede do Conselho Regional de Medicina do Estado de Mato Grosso (CRM-MT).", "Processo": "04/2022", "Link PNCP": "https://pncp.gov.br/app/editais/03008521000183/2022/1"}, {"Categoria": "Reforma / Adequação Predial", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 2050.0, "Modalidade": "Dispensa", "Data Publicação": "2024-07-01", "Encerramento Proposta": NaN, "Órgão": "MINISTERIO DO TRABALHO E EMPREGO - MTE", "Objeto": "Reforma geral de estante.", "Processo": "005/2024", "Link PNCP": "https://pncp.gov.br/app/editais/37115367000160/2024/85"}, {"Categoria": "Instalações / Climatização", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 4000.0, "Modalidade": "Dispensa", "Data Publicação": "2024-06-28", "Encerramento Proposta": NaN, "Órgão": "COMANDO DO EXERCITO", "Objeto": "Contratação do serviço de manutenção de prensa hidráulica do 44°BIMtz.", "Processo": "64104003872202349", "Link PNCP": "https://pncp.gov.br/app/editais/00394452000103/2024/11723"}, {"Categoria": "Instalações / Climatização", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 4318.0, "Modalidade": "Dispensa", "Data Publicação": "2024-06-20", "Encerramento Proposta": "2024-06-27 07:59", "Órgão": "COMANDO DO EXERCITO", "Objeto": "Manutenção de prensa hidráulica (SFPC - 44°BITMZ):  1. Montagem e desmontagem (mão de obra)  2. Reparo/troca do pistão de descida (cilindro hidráulico)  3. Limpeza e higienização do reservatório de óleo  4. Troca de óleo  5. Reparo ou troca de porcas das mangueiras de óleo", "Processo": "64104003996202413", "Link PNCP": "https://pncp.gov.br/app/editais/00394452000103/2024/10986"}, {"Categoria": "Reforma / Adequação Predial", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 17430.0, "Modalidade": "Dispensa", "Data Publicação": "2024-06-12", "Encerramento Proposta": NaN, "Órgão": "MINISTERIO DO TRABALHO E EMPREGO - MTE", "Objeto": "Contratação de Prestador de Serviço em Reforma e Manutenção de Cadeiras e Longarinas.", "Processo": "002/2024", "Link PNCP": "https://pncp.gov.br/app/editais/37115367000160/2024/70"}, {"Categoria": "Manutenção Predial", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 349898.88, "Modalidade": "Dispensa", "Data Publicação": "2024-05-13", "Encerramento Proposta": NaN, "Órgão": "FUNDACAO UNIVERSIDADE FEDERAL DE MATO GROSSO", "Objeto": "Contratação EMERGENCIAL de empresa especializada na prestação de serviços continuados de limpeza, asseio e conservação, com fornecimento de mão de obra, saneantes, equipamentos/utensílios e materiais de consumo, serviço de manutenção predial e conservação conforme TR 30/2024 . Processo 23108.026580/2024-48.", "Processo": "23108.026580/2024-48", "Link PNCP": "https://pncp.gov.br/app/editais/33004540000100/2024/18"}, {"Categoria": "Instalações / Climatização", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 1670.0, "Modalidade": "Dispensa", "Data Publicação": "2024-05-08", "Encerramento Proposta": "2024-05-15 07:59", "Órgão": "MINISTERIO PUBLICO DA UNIAO", "Objeto": "CAFETEIRA ELÉTRICA, automática, prepara e mantém o café aquecido, capacidade mínima 6 litros, em aço inoxidável 430, termostato, bivolt 110/220v, ou 110v, aro coador em aço 304, dispensa o uso de coador em pano ou papel, corpo em aço escovado, pingadeira removível para facilitar a limpeza, lâmpada indicadora de aquecimento, potência mínima de 1000W. Certificação do INMETRO. Garantia de 12 meses. Marca de referência: MARCHESONI, equivalente ou de melhor qualidade.", "Processo": "320/2024-37", "Link PNCP": "https://pncp.gov.br/app/editais/26989715000102/2024/613"}, {"Categoria": "Instalações / Climatização", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 49355.0, "Modalidade": "Dispensa", "Data Publicação": "2024-04-24", "Encerramento Proposta": NaN, "Órgão": "INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DE MATO GROSSO", "Objeto": "Contratação de prestação de serviço de manutenção preventiva e corretiva em aparelhos de climatização", "Processo": "23750.000115.2024-01", "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2024/117"}, {"Categoria": "Instalações / Climatização", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 0.0, "Modalidade": "Dispensa", "Data Publicação": "2024-04-23", "Encerramento Proposta": "2024-04-26 07:59", "Órgão": "PROCURADORIA GERAL DE JUSTICA DO ESTADO DE MATO GROSSO", "Objeto": "Contratação de empresa especializada para prestação de serviço de manutenção corretiva, com fornecimento de peças, para o sistema de geração de energia elétrica fotovoltaica presente na Sede das Promotorias da Infância e Juventude de Cuiabá, conforme condições e exigências estabelecidas neste instrumento.", "Processo": "000303-001/2024", "Link PNCP": "https://pncp.gov.br/app/editais/14921092000157/2024/74"}, {"Categoria": "Instalações / Climatização", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 23110.8, "Modalidade": "Dispensa", "Data Publicação": "2024-04-18", "Encerramento Proposta": "2024-04-23 08:59", "Órgão": "CONSELHO REGIONAL DE ENGENHARIA E AGRONOMIA DE MATO GROSSO", "Objeto": "Contratação de cafeteira elétrica e garrafa de café para atender as necessidades do CREA-MT.", "Processo": "20240163987", "Link PNCP": "https://pncp.gov.br/app/editais/03471158000138/2024/14"}, {"Categoria": "Instalações / Climatização", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 27280.0, "Modalidade": "Dispensa", "Data Publicação": "2024-04-11", "Encerramento Proposta": "2024-04-17 07:59", "Órgão": "MINISTERIO DA JUSTICA E SEGURANCA PUBLICA", "Objeto": "Serviços de desinfestação, desinsetização, desratização, descupinização e combate a escorpiões nas instalações dos edifícios em uso pela Polícia Federal em Mato Grosso (áreas internas e externas), com fornecimento de material, ferramentas, utensílios e equipamentos, e deverão ser realizados em todos os ambientes dos respectivos prédios, tais como: edificações principais e secundárias, subestação de energia elétrica, caixas de gordura e caixas de esgoto, lixeiras, e outros", "Processo": "08320000534202419", "Link PNCP": "https://pncp.gov.br/app/editais/00394494000136/2024/268"}, {"Categoria": "Reforma / Adequação Predial", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 123900.0, "Modalidade": "Dispensa", "Data Publicação": "2024-04-09", "Encerramento Proposta": NaN, "Órgão": "PROCURADORIA GERAL DE JUSTICA DO ESTADO DE MATO GROSSO", "Objeto": "Contratação, por DISPENSA DE LICITAÇÃO, da empresa J. L. M. CONSTRUTORA E PROJETOS LTDA, CNPJ nº 17.107.098/0001-83, no valor total de R$ 123.900,00 (cento e vinte e três mil e novecentos  reais), para prestação de serviços de reforma predial emergencial, especificamente reforma completa da cobertura da Sede das Promotorias de Justiça de Tangará da Serra-MT, sem alteração da área construída, com fornecimento de materiais e mão de obra.", "Processo": "20.14.0001.0001212/2024-88", "Link PNCP": "https://pncp.gov.br/app/editais/14921092000157/2024/60"}, {"Categoria": "Instalações / Climatização", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 0.0, "Modalidade": "Dispensa", "Data Publicação": "2024-03-13", "Encerramento Proposta": "2024-03-20 07:59", "Órgão": "CONSELHO REGIONAL DE FARMACIA DO ESTADO DE MATO GROSSO", "Objeto": "O objeto da presente dispensa é aquisição, instalação e remanejamento de equipamentos de ar condicionado destinados à climatização dos ambientes internos do Conselho Regional de Farmácia do Estado de Mato Grosso (CRF/MT), nos termos da tabela a seguir, conforme condições, quantidades e exigências estabelecidas neste Aviso de Contratação Direta e seus anexos", "Processo": "011/2024", "Link PNCP": "https://pncp.gov.br/app/editais/15081680000192/2024/3"}, {"Categoria": "Pavimentação / Infraestrutura", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 61703291.52, "Modalidade": "Dispensa", "Data Publicação": "2024-03-05", "Encerramento Proposta": NaN, "Órgão": "DNIT-DEPARTAMENTO NACIONAL DE INFRAEST DE TRANSPORTES", "Objeto": "Execução dos serviços emergenciais de recuperação na Rodovia Federal BR-158/MT; Trecho: Divisa PA/MT (Início das Obras de Pavimentação) - Divisa MT/GO (Fim Ponte s/Rio Araguaia); Subtrecho: Fim das Obras de Pavimentação - Entr. MT-322(B)/433 (Alô Brasil), Segmento: km 201,20 ao km 330,60; Pontos Críticos: km 202,800 ao km 322,900 e local no km 278,500 (Bueiro); Código SNV: 158BMT0205 - 158BMT0215.", "Processo": "50611000198/2024-97", "Link PNCP": "https://pncp.gov.br/app/editais/04892707000100/2025/2"}, {"Categoria": "Pavimentação / Infraestrutura", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 61703291.52, "Modalidade": "Dispensa", "Data Publicação": "2024-03-05", "Encerramento Proposta": NaN, "Órgão": "DNIT-DEPARTAMENTO NACIONAL DE INFRAEST DE TRANSPORTES", "Objeto": "Execução dos serviços emergenciais de recuperação na Rodovia Federal BR-158/MT; Trecho: Divisa PA/MT (Início das Obras de Pavimentação) - Divisa MT/GO (Fim Ponte s/Rio Araguaia); Subtrecho: Fim das Obras de Pavimentação - Entr. MT-322(B)/433 (Alô Brasil), Segmento: km 201,20 ao km 330,60; Pontos Críticos: km 202,800 ao km 322,900 e local no km 278,500 (Bueiro); Código SNV: 158BMT0205 - 158BMT0215", "Processo": "50611000198202497", "Link PNCP": "https://pncp.gov.br/app/editais/04892707000100/2024/106"}, {"Categoria": "Construção Civil", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 0.0, "Modalidade": "Dispensa", "Data Publicação": "2024-02-29", "Encerramento Proposta": "2024-03-07 08:59", "Órgão": "CONSELHO REGIONAL DE ENGENHARIA E AGRONOMIA DE MATO GROSSO", "Objeto": "Levantamento planialtimétrico do terreno, elaboração de projeto executivo de arquitetura com base em anteprojeto elaborado pelo setor de projetos do crea-mt, elaboração de projetos complementares, orçamento completo com planilha geral de quantitativos e respectivos memoriais descritivos, para futura construção da inspetoria do crea-mt no município de alta floresta.", "Processo": "P20240019690", "Link PNCP": "https://pncp.gov.br/app/editais/03471158000138/2024/8"}, {"Categoria": "Construção Civil", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 50789.12, "Modalidade": "Dispensa", "Data Publicação": "2024-02-09", "Encerramento Proposta": "2024-02-27 08:59", "Órgão": "CONSELHO REGIONAL DE ENGENHARIA E AGRONOMIA DE MATO GROSSO", "Objeto": "Levantamento Planialtimétrico do terreno, Elaboração de projeto executivo de arquitetura com base em anteprojeto elaborado pelo setor de projetos do CREA-MT, Elaboração de projetos complementares, orçamento completo com planilha geral de quantitativos e respectivos memoriais descritivos, para construção da Inspetoria do CREA-MT no município de Alta Floresta. O projeto deverá atender todas as legislações municipais e estaduais para a aprovação junto aos  órgãos competentes.", "Processo": "P20240019690", "Link PNCP": "https://pncp.gov.br/app/editais/03471158000138/2024/5"}, {"Categoria": "Instalações / Climatização", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 775000.0, "Modalidade": "Dispensa", "Data Publicação": "2024-02-09", "Encerramento Proposta": NaN, "Órgão": "PROCURADORIA GERAL DE JUSTICA DO ESTADO DE MATO GROSSO", "Objeto": "Contratação emergencial de empresa especializada para a prestação de serviços de manutenção preventiva, corretiva, instalação, desinstalação e/ou remanejamento de aparelhos/equipamentos, com fornecimento de insumos (peças, materiais e outros mais), serviços e mão de obra, sob demanda, nos sistemas de climatização e refrigeração das unidades do Ministério Público do Estado de Mato Grosso do Polo institucional 1 - Cuiabá, com valor total de R$ 775.000,00 (setecentos e setenta e cinco mil reais)", "Processo": "20.14.0001.0008355/2023-66", "Link PNCP": "https://pncp.gov.br/app/editais/14921092000157/2024/22"}, {"Categoria": "Manutenção Predial", "Município": "CUIABÁ", "Prioritária (Cuiabá/VG)": "SIM", "Valor Estimado (R$)": 14849.25, "Modalidade": "Dispensa", "Data Publicação": "2024-02-02", "Encerramento Proposta": NaN, "Órgão": "INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DE MATO GROSSO", "Objeto": "Contratação emergencial de empresa para prestação de serviços contínuos, com dedicação exclusiva de mão de obra, de limpeza, asseio e conservação predial, com fornecimento de uniformes e EPIs - IFMT TGA", "Processo": "23753.000033.2024-28", "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2024/23"}, {"Categoria": "Manutenção Predial", "Município": "CÁCERES", "Prioritária (Cuiabá/VG)": "NÃO", "Valor Estimado (R$)": 12455.7, "Modalidade": "Dispensa", "Data Publicação": "2024-08-22", "Encerramento Proposta": NaN, "Órgão": "INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DE MATO GROSSO", "Objeto": "Aquisição EMERGENCIAL de materiais de manutenção predial para reparos URGENTES nas estruturas do IFMT Campus Cáceres - Prof. Olegário Baldo.", "Processo": "23191.000775.2024-66", "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2024/299"}, {"Categoria": "Manutenção Predial", "Município": "JUÍNA", "Prioritária (Cuiabá/VG)": "NÃO", "Valor Estimado (R$)": 1557.4, "Modalidade": "Dispensa", "Data Publicação": "2024-06-25", "Encerramento Proposta": NaN, "Órgão": "INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DE MATO GROSSO", "Objeto": "Aquisição materiais e ferramentas para manutenção predial.", "Processo": "23195.000438.2024-39", "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2024/197"}, {"Categoria": "Manutenção Predial", "Município": "RIBEIRÃO CASCALHEIRA", "Prioritária (Cuiabá/VG)": "NÃO", "Valor Estimado (R$)": 19999.0, "Modalidade": "Dispensa", "Data Publicação": "2024-06-11", "Encerramento Proposta": NaN, "Órgão": "FUNDACAO NACIONAL DO INDIO", "Objeto": "Contratação de empresa especializada na prestação dos serviços de manutenção predial, com fornecimento dos materiais e dos insumos necessários, além dos equipamentos e mão-de-obra, referente à pintura e revitalização de alvenaria.", "Processo": "08100.000242/2024-62", "Link PNCP": "https://pncp.gov.br/app/editais/00059311000126/2024/247"}, {"Categoria": "Reforma / Adequação Predial", "Município": "DIAMANTINO", "Prioritária (Cuiabá/VG)": "NÃO", "Valor Estimado (R$)": 111793.08, "Modalidade": "Dispensa", "Data Publicação": "2024-05-24", "Encerramento Proposta": "2024-06-03 07:59", "Órgão": "ESTADO DE MATO GROSSO", "Objeto": "Contratação de empresa especializada para contratação de empresa especializada em elaboração de anteprojeto, projeto básico e projeto executivo, incluindo memorial descritivo/caderno de especificações e encargos, planilha de quantitativos e preços, projetos complementares de engenharia e cronograma Físico-financeiro para a reforma/ampliação da Câmara Municipal de Diamantino-MT.", "Processo": "184/2024", "Link PNCP": "https://pncp.gov.br/app/editais/03507415000144/2024/119"}, {"Categoria": "Manutenção Predial", "Município": "JUÍNA", "Prioritária (Cuiabá/VG)": "NÃO", "Valor Estimado (R$)": 158833.2, "Modalidade": "Dispensa", "Data Publicação": "2024-05-10", "Encerramento Proposta": NaN, "Órgão": "INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DE MATO GROSSO", "Objeto": "O contrato com a empresa atual prestadora de serviços de oficial de\nserviços gerais (pedreiros) tem seu vencimento em 15 de março de 2024tem seu vencimento em 15 de março . O contrato não pode ser\nrenovado porque a empresa não tem interesse na renovação, e não possuímos ata vigente para contratação. O\nCampus Juína depende dessa mão de obra terceirizada para a manutenção predial preventiva e corretiva.\nConsiderando a importância do serviço, bem como a impossibilidade do campus fica sem a prestaçã", "Processo": "23195.000074.2024-97", "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2024/134"}, {"Categoria": "Reforma / Adequação Predial", "Município": "SÃO FÉLIX DO ARAGUAIA", "Prioritária (Cuiabá/VG)": "NÃO", "Valor Estimado (R$)": 73997.34, "Modalidade": "Dispensa", "Data Publicação": "2024-03-26", "Encerramento Proposta": "2024-04-11 09:59", "Órgão": "MINISTERIO DA SAUDE", "Objeto": "Contratação de empresa especializada em reforma e manutenção predial, com a inclusão de material,  para execução de obra de reforma do antigo polo base de saúde indígena localizado no município de Confresa - MT, jurisdicionado ao DSEI Araguaia/SESAI/MS,  conforme condições, quantidades e exigências estabelecidas neste instrumento e seus anexos.", "Processo": "25045001048202344", "Link PNCP": "https://pncp.gov.br/app/editais/00394544000185/2024/318"}, {"Categoria": "Instalações / Climatização", "Município": "CÁCERES", "Prioritária (Cuiabá/VG)": "NÃO", "Valor Estimado (R$)": 7970.0, "Modalidade": "Dispensa", "Data Publicação": "2024-03-21", "Encerramento Proposta": "2024-03-26 07:59", "Órgão": "INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DE MATO GROSSO", "Objeto": "Contratação de serviços de manutenção em aparelhos de climatização do refeitório do IFMT Campus Cáceres.", "Processo": "23191000941202343", "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2024/92"}, {"Categoria": "Construção Civil", "Município": "RONDONÓPOLIS", "Prioritária (Cuiabá/VG)": "NÃO", "Valor Estimado (R$)": 19947.24, "Modalidade": "Dispensa", "Data Publicação": "2024-03-13", "Encerramento Proposta": NaN, "Órgão": "COMANDO DO EXERCITO", "Objeto": "Dispensa de Licitação Eletrônica para compra de materiais de construção e elétrica do 18ºGAC", "Processo": "64553.000621/2024-03", "Link PNCP": "https://pncp.gov.br/app/editais/00394452000103/2024/2186"}, {"Categoria": "Instalações / Climatização", "Município": "CÁCERES", "Prioritária (Cuiabá/VG)": "NÃO", "Valor Estimado (R$)": 2335.34, "Modalidade": "Dispensa", "Data Publicação": "2024-02-20", "Encerramento Proposta": NaN, "Órgão": "INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DE MATO GROSSO", "Objeto": "Aquisição emergencial de materiais elétricos para troca do cabeamento e outros componentes para recuperação da rede elétrica das salas de engenharia florestal, afetadas pela tempestade ocorrida no IFMT Campus Cáceres - Prof. Olegário Baldo.", "Processo": "23191.000148.2024-25", "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2024/43"}, {"Categoria": "Serviços de Engenharia Geral", "Município": "JUARA", "Prioritária (Cuiabá/VG)": "NÃO", "Valor Estimado (R$)": 14267.12, "Modalidade": "Dispensa", "Data Publicação": "2024-01-31", "Encerramento Proposta": NaN, "Órgão": "ESTADO DE MATO GROSSO", "Objeto": "Contratação de empresa especializada para prestação de serviços de engenharia para assessoramento, acompanhamento e fiscalização dos serviços de execução do projeto estrutural metálico de cobertura com telha isotérmica, projeto de águas pluviais e contrapiso no prédio da Câmara de Juara, conforme Contrato nº 014/2023.", "Processo": "001/2024", "Link PNCP": "https://pncp.gov.br/app/editais/03507415000144/2024/19"}, {"Categoria": "Instalações / Climatização", "Município": "PRIMAVERA DO LESTE", "Prioritária (Cuiabá/VG)": "NÃO", "Valor Estimado (R$)": 53286.2, "Modalidade": "Dispensa", "Data Publicação": "2024-01-24", "Encerramento Proposta": "2024-01-29 07:59", "Órgão": "INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DE MATO GROSSO", "Objeto": "Contratação de serviços de manutenção preventiva e corretiva em aparelhos de climatização, com fornecimento de peças para atender as necessidades do IFMT campus Primavera do Leste.", "Processo": "23748000049202418", "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2024/17"}];
+
+    function formatarMoeda(valor) {
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
+    }
+
+    function renderizarTabela(lista) {
+        const tbody = document.getElementById('corpoTabela');
+        tbody.innerHTML = '';
+
+        if (lista.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Nenhum edital encontrado com os filtros atuais.</td></tr>';
+            return;
+        }
+
+        lista.forEach(item => {
+            const tr = document.createElement('tr');
+            
+            const isPrioritaria = item['Prioritária (Cuiabá/VG)'] === 'SIM';
+            const badgeRegiao = isPrioritaria 
+                ? `<span class="badge badge-cuiaba"><i class="bi bi-geo-alt-fill"></i> ${item['Município']}</span>` 
+                : `<span class="badge bg-secondary">${item['Município']}</span>`;
+
+            tr.innerHTML = `
+                <td style="white-space: nowrap;"><small class="text-muted">${item['Data Publicação'] || 'N/A'}</small></td>
+                <td>${badgeRegiao}</td>
+                <td><span class="badge badge-cat">${item['Categoria']}</span></td>
+                <td><strong>${item['Órgão']}</strong></td>
+                <td><small>${item['Objeto']}</small></td>
+                <td class="text-end fw-bold text-primary" style="white-space: nowrap;">${formatarMoeda(item['Valor Estimado (R$)'] || 0)}</td>
+                <td class="text-center">
+                    <a href="${item['Link PNCP']}" target="_blank" class="btn btn-pncp">
+                        <i class="bi bi-box-arrow-up-right"></i> Ver Edital
+                    </a>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function filtrarTabela() {
+        const busca = document.getElementById('filtroTexto').value.toLowerCase();
+        const regiao = document.getElementById('filtroRegiao').value;
+        const categoria = document.getElementById('filtroCategoria').value.toLowerCase();
+        const porte = parseFloat(document.getElementById('filtroPorte').value) || 0;
+
+        const filtrados = dadosObras.filter(item => {
+            const matchTexto = !busca || 
+                (item['Objeto'] && item['Objeto'].toLowerCase().includes(busca)) ||
+                (item['Órgão'] && item['Órgão'].toLowerCase().includes(busca)) ||
+                (item['Município'] && item['Município'].toLowerCase().includes(busca));
+
+            const matchRegiao = !regiao || item['Prioritária (Cuiabá/VG)'] === regiao;
+            const matchCategoria = !categoria || (item['Categoria'] && item['Categoria'].toLowerCase().includes(categoria));
+            const matchPorte = !porte || (item['Valor Estimado (R$)'] <= porte);
+
+            return matchTexto && matchRegiao && matchCategoria && matchPorte;
+        });
+
+        renderizarTabela(filtrados);
+    }
+
+    // Inicialização
+    renderizarTabela(dadosObras);
+</script>
+</body>
+</html>
