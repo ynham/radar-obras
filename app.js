@@ -181,13 +181,17 @@ async function carregarDados() {
 // Atualizar Indicadores no Topo
 function atualizarKPIs() {
   const total = AppState.dados.length;
-  const cuiabaVG = AppState.dados.filter(d => d['Prioritária (Cuiabá/VG)'] === 'SIM').length;
-  const privadasSistemas = AppState.dados.filter(d => (d['Origem'] || '').includes('Sistema S') || (d['Origem'] || '').includes('Privada')).length;
+  const cuiabaVG = AppState.dados.filter(d => (d['Prioritária (Cuiabá/VG)'] === 'SIM' || (d['Município'] || '').toUpperCase().includes('CUIAB') || (d['Município'] || '').toUpperCase().includes('VARZEA'))).length;
+  const reformas = AppState.dados.filter(d => {
+    const cat = (d['Categoria'] || '').toLowerCase();
+    return cat.includes('reforma') || cat.includes('adequa');
+  }).length;
   const volumeTotal = AppState.dados.reduce((acc, curr) => acc + (curr['Valor Estimado (R$)'] || 0), 0);
 
   document.getElementById('kpiTotal').textContent = total;
   document.getElementById('kpiCuiaba').textContent = cuiabaVG;
-  document.getElementById('kpiPrivadasSistemas').textContent = privadasSistemas;
+  const elReformas = document.getElementById('kpiReformas') || document.getElementById('kpiPrivadasSistemas');
+  if (elReformas) elReformas.textContent = reformas;
   document.getElementById('kpiVolume').textContent = formatarMoeda(volumeTotal);
 
   document.getElementById('badgeTotalAba').textContent = total;
@@ -221,36 +225,41 @@ function filtrarRapido(tipo) {
 
   const selectAlim = document.getElementById('filtroAlimentador');
   const selectReg = document.getElementById('filtroRegiao');
+  const selectCat = document.getElementById('filtroCategoria');
   const inputBusca = document.getElementById('filtroTexto');
 
   if (tipo === 'todos') {
     if (selectAlim) selectAlim.value = '';
     if (selectReg) selectReg.value = '';
+    if (selectCat) selectCat.value = '';
     if (inputBusca) inputBusca.value = '';
     AppState.filtrados = [...AppState.dados];
     renderizarRadar();
+    atualizarContadorResultados();
     return;
   } else if (tipo === 'cuiaba') {
     if (selectReg) selectReg.value = 'SIM';
-    if (selectAlim) selectAlim.value = '';
-  } else if (tipo === 'pncp') {
-    if (selectAlim) selectAlim.value = 'PNCP';
+    if (selectCat) selectCat.value = '';
+  } else if (tipo === 'reforma') {
+    if (selectCat) selectCat.value = 'Reforma';
     if (selectReg) selectReg.value = '';
-  } else if (tipo === 'sistemas') {
-    if (selectAlim) selectAlim.value = 'Sistema S';
+  } else if (tipo === 'construcao') {
+    if (selectCat) selectCat.value = 'Construção';
     if (selectReg) selectReg.value = '';
-  } else if (tipo === 'alvaras') {
-    if (selectAlim) selectAlim.value = 'Diário Oficial';
+  } else if (tipo === 'manutencao') {
+    if (selectCat) selectCat.value = 'Manutenção';
     if (selectReg) selectReg.value = '';
   } else if (tipo === 'favs') {
     AppState.filtrados = AppState.dados.filter(d => AppState.favoritos.includes(d._id));
     renderizarRadar();
+    atualizarContadorResultados();
     return;
   }
   aplicarFiltros();
 }
 
 // Função Auxiliar de Normalização de Texto (Ignora Acentos e Caixa)
+
 function normalizarTexto(txt) {
   return (txt || '')
     .toString()
