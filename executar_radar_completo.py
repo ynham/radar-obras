@@ -1,37 +1,72 @@
 """
-Executador Completo do Radar de Obras (Local & Nuvem)
-1. Busca editais na API do PNCP
-2. Atualiza a planilha Excel e o Painel Web HTML
-3. Envia alerta por e-mail se configurado
+Executador Completo do Radar Multissource de Obras (Local & Nuvem)
+1. Varre editais governamentais na API do PNCP (Compras.gov)
+2. Varre licitações do Sistema S (SESI, SENAI, SESC, SENAC, SEBRAE MT)
+3. Varre alvarás de obras e reformas privadas aprovadas em Cuiabá e Várzea Grande
+4. Atualiza a planilha Excel, base JSON e o Painel Web
+5. Envia alerta por e-mail se configurado
 """
 
 import os
+import pandas as pd
 from datetime import datetime, timedelta
 from radar_obras import RadarLicitacoes
+from radar_sistema_s import RadarSistemaS
+from radar_alvaras_mt import RadarAlvarasMT
 from exportar_dashboard_html import gerar_dashboard
 from notificador_email import NotificadorEmail
 
 def main():
-    # 1. Configurar período (busca dos últimos 7 dias para varredura diária)
-    dias_retroativos = int(os.getenv("DIAS_RETROATIVOS", "30"))
+    todas_oportunidades = []
+    
+    # 1. Varredura Governamental (PNCP)
+    dias_retroativos = int(os.getenv("DIAS_RETROATIVOS", "240"))
     hoje = datetime.now()
     inicio = hoje - timedelta(days=dias_retroativos)
     
     data_fim = hoje.strftime("%Y-%m-%d")
     data_ini = inicio.strftime("%Y-%m-%d")
     
-    # 2. Executar o Radar
-    radar = RadarLicitacoes(uf=os.getenv("UF_ESTADO", "MT"))
-    oportunidades = radar.buscar_oportunidades(data_inicio=data_ini, data_fim=data_fim)
+    print(f"\n>>> 1. Varrendo PNCP (Governo) de {data_ini} até {data_fim}...")
+    radar_gov = RadarLicitacoes(uf=os.getenv("UF_ESTADO", "MT"))
+    ops_gov = radar_gov.buscar_oportunidades(data_inicio=data_ini, data_fim=data_fim)
+    todas_oportunidades.extend(ops_gov)
     
-    if oportunidades:
-        # Salvar Excel e Painel Web
-        radar.exportar_para_excel(oportunidades, "oportunidades_obras_mt.xlsx")
-        gerar_dashboard("oportunidades_obras_mt.xlsx", "radar_obras.html")
+    # 2. Varredura do Sistema S (Sesi / Senai / Sesc / Sebrae MT)
+    print("\n>>> 2. Varrendo Sistema S (Mato Grosso)...")
+    radar_s = RadarSistemaS(uf=os.getenv("UF_ESTADO", "MT"))
+    ops_sistema_s = radar_s.buscar_oportunidades()
+    todas_oportunidades.extend(ops_sistema_s)
+    
+    # 3. Varredura de Obras Privadas (Alvarás Cuiabá e Várzea Grande)
+    print("\n>>> 3. Varrendo Obras Privadas (Alvarás Cuiabá / VG)...")
+    radar_alv = RadarAlvarasMT()
+    ops_alvaras = radar_alv.buscar_oportunidades()
+    todas_oportunidades.extend(ops_alvaras)
+    
+    # Ordenar por data mais recente
+    todas_oportunidades.sort(key=lambda x: str(x.get("Data Publicação", "")), reverse=True)
+    
+    print(f"\n=======================================================")
+    print(f"  TOTAL DE OPORTUNIDADES CONSOLIDADAS: {len(todas_oportunidades)}")
+    print(f"  - Governo / PNCP: {len(ops_gov)}")
+    print(f"  - Sistema S: {len(ops_sistema_s)}")
+    print(f"  - Obras Privadas (Alvarás): {len(ops_alvaras)}")
+    print(f"=======================================================\n")
+    
+    if todas_oportunidades:
+        # Salvar Excel
+        df = pd.DataFrame(todas_oportunidades)
+        arquivo_excel = "oportunidades_obras_mt.xlsx"
+        df.to_excel(arquivo_excel, index=False)
+        print(f"[OK] Planilha consolidada gerada: {arquivo_excel}")
         
-        # 3. Enviar E-mail (se as credenciais existirem)
+        # Gerar JSON e Sincronizar Sistema Web
+        gerar_dashboard(arquivo_excel, "radar_obras.html")
+        
+        # 4. Enviar E-mail (se configurado)
         email_remetente = os.getenv("EMAIL_REMETENTE")
-        senha_remetente = os.getenv("EMAIL_SENHA") # App Password
+        senha_remetente = os.getenv("EMAIL_SENHA")
         email_destinatario = os.getenv("EMAIL_DESTINATARIO")
         
         if email_remetente and senha_remetente and email_destinatario:
@@ -42,11 +77,9 @@ def main():
                 email_remetente=email_remetente,
                 senha_remetente=senha_remetente
             )
-            notificador.enviar_alerta(destinatarios=destinatarios, oportunidades=oportunidades)
+            notificador.enviar_alerta(destinatarios=destinatarios, oportunidades=todas_oportunidades)
         else:
-            print("[Info] E-mail não configurado ou rodando em modo visual. Arquivos locais e web atualizados com sucesso.")
-    else:
-        print("[Info] Nenhuma nova oportunidade encontrada no período.")
+            print("[Info] E-mail não configurado ou rodando em modo silencioso.")
 
 if __name__ == "__main__":
     main()

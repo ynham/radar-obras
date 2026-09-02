@@ -22,14 +22,56 @@ function formatarMoeda(valor) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
 }
 
+// Resolução Segura de Links Oficiais (Prevenção Total contra Erro 404)
+function obterLinkSeguro(item) {
+  if (!item) return 'https://pncp.gov.br';
+  const link = (item['Link PNCP'] || item['LinkOficial'] || '').trim();
+
+  // Se já for um link HTTP válido que não seja placeholder antigo
+  if (link.startsWith('http') && !link.includes('lic-0') && !link.includes('alvara-') && !link.includes('example.com')) {
+    return link;
+  }
+
+  // Fallback canônico oficial garantido por entidade e alimentador
+  const orgao = (item['Órgão'] || item['Requerente'] || '').toUpperCase();
+  const origem = (item['Origem'] || item['Alimentador'] || '').toUpperCase();
+
+  if (orgao.includes('SESI') || orgao.includes('SENAI') || orgao.includes('FIEMT') || orgao.includes('IEL')) {
+    return 'https://compras.sfiemt.ind.br/portal/Mural.aspx?nNmTela=E';
+  }
+
+  if (orgao.includes('SESC') || orgao.includes('SENAC')) {
+    return 'https://transparencia-mt.sesc.com.br';
+  }
+  if (orgao.includes('SEBRAE')) {
+    return 'https://sebrae.com.br/sites/PortalSebrae/licitacoes';
+  }
+  if (origem.includes('PRIVADA') || origem.includes('ALVARÁ')) {
+    const mun = (item['Município'] || '').toUpperCase();
+    if (mun.includes('VÁRZEA') || mun.includes('VARZEA')) {
+      return 'https://diariomunicipal.org/mt/amm/';
+    }
+    return 'https://gazetamunicipal.cuiaba.mt.gov.br/';
+  }
+
+  // Governo / PNCP
+  const proc = (item['Processo'] || '').trim();
+  if (proc) {
+    return `https://pncp.gov.br/app/editais?q=${encodeURIComponent(proc)}&uf=MT`;
+  }
+  return 'https://pncp.gov.br';
+}
+
 // Inicialização Principal
 document.addEventListener('DOMContentLoaded', async () => {
   aplicarTema(AppState.tema);
   configurarEventosUI();
   await carregarDados();
   atualizarKPIs();
+  atualizarContadorResultados();
   renderizarAbaAtual();
 });
+
 
 // Configura Listeners de Navegação e Filtros
 function configurarEventosUI() {
@@ -53,6 +95,7 @@ function configurarEventosUI() {
 
   // Filtros em Tempo Real
   document.getElementById('filtroTexto').addEventListener('input', debounce(aplicarFiltros, 250));
+  document.getElementById('filtroAlimentador').addEventListener('change', aplicarFiltros);
   document.getElementById('filtroRegiao').addEventListener('change', aplicarFiltros);
   document.getElementById('filtroCategoria').addEventListener('change', aplicarFiltros);
   document.getElementById('filtroPorte').addEventListener('change', aplicarFiltros);
@@ -91,25 +134,42 @@ function aplicarTema(tema) {
   }
 }
 
-// Carregar Dados da Base (JSON com Fallback Local)
+// Carregar Dados da Base (JSON com Metadados de Alimentadores e Fallback)
 async function carregarDados() {
+  let payload = null;
   try {
     const res = await fetch('./dados_obras.json');
     if (!res.ok) throw new Error('Não foi possível carregar dados_obras.json');
-    AppState.dados = await res.json();
+    payload = await res.json();
   } catch (err) {
     console.warn('Carregamento via fetch local falhou (possível file:// protocol). Usando fallback.', err);
-    if (window.DADOS_FALLBACK && Array.isArray(window.DADOS_FALLBACK)) {
-      AppState.dados = window.DADOS_FALLBACK;
+    if (window.DADOS_FALLBACK) {
+      payload = window.DADOS_FALLBACK;
     } else {
-      AppState.dados = [];
+      payload = [];
     }
+  }
+
+  if (Array.isArray(payload)) {
+    AppState.dados = payload;
+    AppState.metadados = {};
+  } else if (payload && payload.oportunidades) {
+    AppState.dados = payload.oportunidades;
+    AppState.metadados = payload.metadados || {};
+  } else {
+    AppState.dados = [];
+    AppState.metadados = {};
+  }
+
+  // Atualizar data da última varredura no cabeçalho se disponível
+  const txtData = document.getElementById('txtUltimaVarredura');
+  if (txtData && AppState.metadados.ultima_atualizacao) {
+    txtData.textContent = `Última Varredura: ${AppState.metadados.ultima_atualizacao}`;
   }
 
   // Gera IDs únicos para cada edital
   AppState.dados.forEach((item, index) => {
     item._id = `edital_${index}_${(item.Processo || '').replace(/[^a-zA-Z0-9]/g, '')}`;
-    // Se não tiver status no kanban, define como 'novas'
     if (!AppState.kanban[item._id]) {
       AppState.kanban[item._id] = 'novas';
     }
@@ -122,12 +182,12 @@ async function carregarDados() {
 function atualizarKPIs() {
   const total = AppState.dados.length;
   const cuiabaVG = AppState.dados.filter(d => d['Prioritária (Cuiabá/VG)'] === 'SIM').length;
-  const pequenoPorte = AppState.dados.filter(d => (d['Valor Estimado (R$)'] || 0) <= 120000 && (d['Valor Estimado (R$)'] || 0) > 0).length;
+  const privadasSistemas = AppState.dados.filter(d => (d['Origem'] || '').includes('Sistema S') || (d['Origem'] || '').includes('Privada')).length;
   const volumeTotal = AppState.dados.reduce((acc, curr) => acc + (curr['Valor Estimado (R$)'] || 0), 0);
 
   document.getElementById('kpiTotal').textContent = total;
   document.getElementById('kpiCuiaba').textContent = cuiabaVG;
-  document.getElementById('kpiPequenoPorte').textContent = pequenoPorte;
+  document.getElementById('kpiPrivadasSistemas').textContent = privadasSistemas;
   document.getElementById('kpiVolume').textContent = formatarMoeda(volumeTotal);
 
   document.getElementById('badgeTotalAba').textContent = total;
@@ -143,38 +203,159 @@ function renderizarAbaAtual() {
   document.getElementById('tabKanban').style.display = AppState.abaAtiva === 'kanban' ? 'block' : 'none';
   document.getElementById('tabCharts').style.display = AppState.abaAtiva === 'charts' ? 'block' : 'none';
   document.getElementById('tabCalculator').style.display = AppState.abaAtiva === 'calculator' ? 'block' : 'none';
+  const tabFeeders = document.getElementById('tabFeeders');
+  if (tabFeeders) tabFeeders.style.display = AppState.abaAtiva === 'feeders' ? 'block' : 'none';
 
   if (AppState.abaAtiva === 'radar') renderizarRadar();
   if (AppState.abaAtiva === 'kanban') renderizarKanban();
   if (AppState.abaAtiva === 'charts') renderizarGraficos();
   if (AppState.abaAtiva === 'calculator') popularCalculadora();
+  if (AppState.abaAtiva === 'feeders') renderizarAlimentadores();
 }
 
-// Filtros do Radar
+// Filtro Rápido em 1 Clique (Pílulas Superiores)
+function filtrarRapido(tipo) {
+  document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
+  const btnClicado = window.event?.currentTarget || document.querySelector(`[onclick="filtrarRapido('${tipo}')"]`);
+  if (btnClicado) btnClicado.classList.add('active');
+
+  const selectAlim = document.getElementById('filtroAlimentador');
+  const selectReg = document.getElementById('filtroRegiao');
+  const inputBusca = document.getElementById('filtroTexto');
+
+  if (tipo === 'todos') {
+    if (selectAlim) selectAlim.value = '';
+    if (selectReg) selectReg.value = '';
+    if (inputBusca) inputBusca.value = '';
+    AppState.filtrados = [...AppState.dados];
+    renderizarRadar();
+    return;
+  } else if (tipo === 'cuiaba') {
+    if (selectReg) selectReg.value = 'SIM';
+    if (selectAlim) selectAlim.value = '';
+  } else if (tipo === 'pncp') {
+    if (selectAlim) selectAlim.value = 'PNCP';
+    if (selectReg) selectReg.value = '';
+  } else if (tipo === 'sistemas') {
+    if (selectAlim) selectAlim.value = 'Sistema S';
+    if (selectReg) selectReg.value = '';
+  } else if (tipo === 'alvaras') {
+    if (selectAlim) selectAlim.value = 'Diário Oficial';
+    if (selectReg) selectReg.value = '';
+  } else if (tipo === 'favs') {
+    AppState.filtrados = AppState.dados.filter(d => AppState.favoritos.includes(d._id));
+    renderizarRadar();
+    return;
+  }
+  aplicarFiltros();
+}
+
+// Função Auxiliar de Normalização de Texto (Ignora Acentos e Caixa)
+function normalizarTexto(txt) {
+  return (txt || '')
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+// Limpar Todos os Filtros
+function limparFiltros() {
+  const elTexto = document.getElementById('filtroTexto');
+  const elAlim = document.getElementById('filtroAlimentador');
+  const elReg = document.getElementById('filtroRegiao');
+  const elCat = document.getElementById('filtroCategoria');
+  const elPorte = document.getElementById('filtroPorte');
+  const elOrd = document.getElementById('filtroOrdenacao');
+
+  if (elTexto) elTexto.value = '';
+  if (elAlim) elAlim.value = '';
+  if (elReg) elReg.value = '';
+  if (elCat) elCat.value = '';
+  if (elPorte) elPorte.value = '';
+  if (elOrd) elOrd.value = 'data_recente';
+
+  document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
+  const btnTodos = document.querySelector(`[onclick="filtrarRapido('todos')"]`);
+  if (btnTodos) btnTodos.classList.add('active');
+
+  AppState.filtrados = [...AppState.dados];
+  renderizarRadar();
+  atualizarContadorResultados();
+  mostrarToast('Filtros redefinidos. Exibindo todas as oportunidades.', 'info');
+}
+
+// Atualizar Contador Visual de Obras Filtradas
+function atualizarContadorResultados() {
+  const elNum = document.getElementById('numFiltrados');
+  const elTotal = document.getElementById('numTotalBase');
+  const badgeAba = document.getElementById('badgeTotalAba');
+
+  const totalFiltrados = AppState.filtrados.length;
+  const totalBase = AppState.dados.length;
+
+  if (elNum) elNum.innerText = totalFiltrados;
+  if (elTotal) elTotal.innerText = totalBase;
+  if (badgeAba) badgeAba.innerText = totalFiltrados;
+}
+
+// Filtros do Radar (Acionado pelo Botão "Aplicar Filtros" ou Seleção)
 function aplicarFiltros() {
-  const busca = (document.getElementById('filtroTexto').value || '').toLowerCase();
-  const regiao = document.getElementById('filtroRegiao').value;
-  const categoria = document.getElementById('filtroCategoria').value.toLowerCase();
-  const porte = parseFloat(document.getElementById('filtroPorte').value) || 0;
-  const ordenacao = document.getElementById('filtroOrdenacao').value;
+  const busca = normalizarTexto(document.getElementById('filtroTexto')?.value);
+  const alimentador = normalizarTexto(document.getElementById('filtroAlimentador')?.value);
+  const regiao = (document.getElementById('filtroRegiao')?.value || '').trim();
+  const categoria = normalizarTexto(document.getElementById('filtroCategoria')?.value);
+  const porte = parseFloat(document.getElementById('filtroPorte')?.value) || 0;
+  const ordenacao = document.getElementById('filtroOrdenacao')?.value || 'data_recente';
 
   AppState.filtrados = AppState.dados.filter(item => {
-    const matchBusca = !busca || 
-      (item['Objeto'] && item['Objeto'].toLowerCase().includes(busca)) ||
-      (item['Órgão'] && item['Órgão'].toLowerCase().includes(busca)) ||
-      (item['Município'] && item['Município'].toLowerCase().includes(busca)) ||
-      (item['Processo'] && String(item['Processo']).toLowerCase().includes(busca));
+    // 1. Busca textual ampla
+    if (busca) {
+      const obj = normalizarTexto(item['Objeto']);
+      const org = normalizarTexto(item['Órgão']);
+      const mun = normalizarTexto(item['Município']);
+      const proc = normalizarTexto(item['Processo']);
+      const cat = normalizarTexto(item['Categoria']);
+      if (!obj.includes(busca) && !org.includes(busca) && !mun.includes(busca) && !proc.includes(busca) && !cat.includes(busca)) {
+        return false;
+      }
+    }
 
-    const matchRegiao = !regiao || item['Prioritária (Cuiabá/VG)'] === regiao;
-    const matchCategoria = !categoria || (item['Categoria'] && item['Categoria'].toLowerCase().includes(categoria));
-    
-    let matchPorte = true;
-    const val = item['Valor Estimado (R$)'] || 0;
-    if (porte === 120000) matchPorte = val <= 120000 && val > 0;
-    if (porte === 500000) matchPorte = val > 120000 && val <= 500000;
-    if (porte === 1000000) matchPorte = val > 500000;
+    // 2. Alimentador / Origem
+    if (alimentador) {
+      const itemAlim = normalizarTexto(item['Alimentador']);
+      const itemOrig = normalizarTexto(item['Origem']);
+      if (!itemAlim.includes(alimentador) && !itemOrig.includes(alimentador)) {
+        return false;
+      }
+    }
 
-    return matchBusca && matchRegiao && matchCategoria && matchPorte;
+    // 3. Região (Cuiabá / Várzea Grande)
+    if (regiao) {
+      const itemPrioritaria = normalizarTexto(item['Prioritária (Cuiabá/VG)']);
+      const itemMun = normalizarTexto(item['Município']);
+      const isCuiabaVG = itemPrioritaria.startsWith('sim') || itemMun.includes('cuiaba') || itemMun.includes('varzea');
+      
+      if (regiao === 'SIM' && !isCuiabaVG) return false;
+      if (regiao === 'NÃO' && isCuiabaVG) return false;
+    }
+
+    // 4. Categoria
+    if (categoria) {
+      const itemCat = normalizarTexto(item['Categoria']);
+      if (!itemCat.includes(categoria)) return false;
+    }
+
+    // 5. Faixa de Valor
+    if (porte > 0) {
+      const val = item['Valor Estimado (R$)'] || 0;
+      if (porte === 120000 && (val <= 0 || val > 120000)) return false;
+      if (porte === 500000 && (val <= 120000 || val > 500000)) return false;
+      if (porte === 1000000 && val <= 500000) return false;
+    }
+
+    return true;
   });
 
   // Ordenação
@@ -188,6 +369,8 @@ function aplicarFiltros() {
   }
 
   renderizarRadar();
+  atualizarContadorResultados();
+  mostrarToast(`Filtros aplicados: ${AppState.filtrados.length} obra(s) encontrada(s).`, 'info');
 }
 
 // Renderizar Lista de Editais (Grid ou Tabela)
@@ -223,16 +406,31 @@ function criarCardEdital(item) {
   const isFav = AppState.favoritos.includes(item._id);
   const temNotas = !!AppState.anotacoes[item._id];
   const statusKanban = AppState.kanban[item._id] || 'novas';
+  const origem = item['Origem'] || '🏛️ Governo / PNCP';
+
+  let badgeOrigemClass = 'badge-origem-gov';
+  let labelLink = 'PNCP Oficial';
+  let feederBorderClass = 'feeder-border-pncp';
+  
+  if (origem.includes('Sistema S')) {
+    badgeOrigemClass = 'badge-origem-sistemas';
+    labelLink = 'Edital S';
+    feederBorderClass = 'feeder-border-sistemas';
+  } else if (origem.includes('Privada')) {
+    badgeOrigemClass = 'badge-origem-privada';
+    labelLink = 'Diário Oficial';
+    feederBorderClass = 'feeder-border-alvaras';
+  }
 
   return `
-    <div class="tender-card" id="card_${item._id}">
+    <div class="tender-card ${feederBorderClass}" id="card_${item._id}">
       <div class="card-top">
         <div class="card-badges">
+          <span class="badge ${badgeOrigemClass}">${origem}</span>
           <span class="badge ${isCuiaba ? 'badge-cuiaba' : 'badge-interior'}">
             <i class="bi bi-geo-alt-fill"></i> ${item['Município'] || 'MT'}
           </span>
           <span class="badge badge-cat">${item['Categoria'] || 'Geral'}</span>
-          <span class="badge badge-dispensa">${item['Modalidade'] || 'Edital'}</span>
         </div>
         <button class="btn-fav ${isFav ? 'active' : ''}" onclick="toggleFavorito('${item._id}')" title="Marcar como Favorito">
           <i class="bi ${isFav ? 'bi-star-fill' : 'bi-star'}"></i>
@@ -247,7 +445,7 @@ function criarCardEdital(item) {
       <div class="card-meta">
         <div>
           <div class="meta-valor-label">Valor Estimado</div>
-          <div class="meta-valor">${formatarMoeda(item['Valor Estimado (R$)'])}</div>
+          <div class="meta-valor tabular-nums">${formatarMoeda(item['Valor Estimado (R$)'])}</div>
         </div>
         <div class="meta-date">
           <i class="bi bi-calendar3"></i> ${item['Data Publicação'] || 'N/A'}<br>
@@ -256,8 +454,8 @@ function criarCardEdital(item) {
       </div>
 
       <div class="card-actions">
-        <a href="${item['Link PNCP'] || '#'}" target="_blank" rel="noopener noreferrer" class="btn-edital">
-          <i class="bi bi-box-arrow-up-right"></i> PNCP
+        <a href="${obterLinkSeguro(item)}" target="_blank" rel="noopener noreferrer" class="btn-edital">
+          <i class="bi bi-box-arrow-up-right"></i> ${labelLink}
         </a>
         
         <button class="btn-card-action" onclick="abrirModalAnotacoes('${item._id}')" title="Anotações da Construtora">
@@ -281,10 +479,22 @@ function criarCardEdital(item) {
   `;
 }
 
+
 // Criação da Linha da Tabela
 function criarLinhaTabela(item) {
   const isCuiaba = item['Prioritária (Cuiabá/VG)'] === 'SIM';
   const isFav = AppState.favoritos.includes(item._id);
+  const origem = item['Origem'] || '🏛️ Governo / PNCP';
+
+  let badgeOrigemClass = 'badge-origem-gov';
+  let labelLink = 'PNCP';
+  if (origem.includes('Sistema S')) {
+    badgeOrigemClass = 'badge-origem-sistemas';
+    labelLink = 'Edital S';
+  } else if (origem.includes('Privada')) {
+    badgeOrigemClass = 'badge-origem-privada';
+    labelLink = 'Alvará';
+  }
 
   return `
     <tr>
@@ -295,7 +505,8 @@ function criarLinhaTabela(item) {
       </td>
       <td style="white-space: nowrap; font-size: 0.8rem; color: var(--text-muted);">${item['Data Publicação'] || 'N/A'}</td>
       <td>
-        <span class="badge ${isCuiaba ? 'badge-cuiaba' : 'badge-interior'}">${item['Município'] || 'MT'}</span>
+        <span class="badge ${badgeOrigemClass}">${origem}</span><br>
+        <span class="badge ${isCuiaba ? 'badge-cuiaba' : 'badge-interior'}" style="margin-top: 4px;">${item['Município'] || 'MT'}</span>
       </td>
       <td><span class="badge badge-cat">${item['Categoria'] || 'Geral'}</span></td>
       <td>
@@ -306,8 +517,8 @@ function criarLinhaTabela(item) {
         ${formatarMoeda(item['Valor Estimado (R$)'])}
       </td>
       <td style="text-align: center; white-space: nowrap;">
-        <a href="${item['Link PNCP'] || '#'}" target="_blank" class="btn-edital" style="display: inline-flex; padding: 5px 10px; font-size: 0.78rem;">
-          <i class="bi bi-box-arrow-up-right"></i> Ver
+        <a href="${obterLinkSeguro(item)}" target="_blank" rel="noopener noreferrer" class="btn-edital" style="display: inline-flex; padding: 5px 10px; font-size: 0.78rem;">
+          <i class="bi bi-box-arrow-up-right"></i> ${labelLink}
         </a>
       </td>
     </tr>
@@ -346,11 +557,11 @@ function renderizarKanban() {
         <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">${item['Município']} • ${item['Categoria']}</div>
         <div class="kanban-card-val">${formatarMoeda(item['Valor Estimado (R$)'])}</div>
         ${nota ? `<div class="kanban-notes-preview"><i class="bi bi-chat-text"></i> ${nota}</div>` : ''}
-        <div style="display: flex; justify-content: space-between; margin-top: 10px; gap: 4px;">
-          <a href="${item['Link PNCP']}" target="_blank" style="font-size: 0.75rem; color: var(--primary); text-decoration: none;">
-            <i class="bi bi-box-arrow-up-right"></i> PNCP
+        <div style="display: flex; justify-content: space-between; margin-top: 10px; gap: 4px; align-items: center;">
+          <a href="${obterLinkSeguro(item)}" target="_blank" rel="noopener noreferrer" style="font-size: 0.75rem; color: var(--primary); text-decoration: none; font-weight: 600;">
+            <i class="bi bi-box-arrow-up-right"></i> ${item['Origem']?.includes('Sistema S') ? 'Edital S' : (item['Origem']?.includes('Privada') ? 'Diário' : 'PNCP')}
           </a>
-          <button class="btn-icon" style="width: 24px; height: 24px; font-size: 11px;" onclick="abrirModalAnotacoes('${item._id}')">
+          <button class="btn-icon" style="width: 24px; height: 24px; font-size: 11px;" onclick="abrirModalAnotacoes('${item._id}')" title="Anotações internas">
             <i class="bi bi-pencil"></i>
           </button>
         </div>
@@ -388,6 +599,13 @@ function abrirModalAnotacoes(id) {
   document.getElementById('modalObjeto').textContent = itemAtualModal['Objeto'] || '';
   document.getElementById('modalValor').textContent = formatarMoeda(itemAtualModal['Valor Estimado (R$)']);
   document.getElementById('textareaNotas').value = AppState.anotacoes[id] || '';
+
+  const modalLink = document.getElementById('modalLinkEdital');
+  if (modalLink) {
+    modalLink.href = obterLinkSeguro(itemAtualModal);
+    const label = itemAtualModal['Origem']?.includes('Sistema S') ? 'Portal de Compras S' : (itemAtualModal['Origem']?.includes('Privada') ? 'Diário Oficial' : 'Edital PNCP');
+    modalLink.innerHTML = `<i class="bi bi-box-arrow-up-right"></i> ${label}`;
+  }
 
   document.getElementById('modalBackdrop').classList.add('show');
 }
@@ -429,11 +647,12 @@ function compartilharWhatsApp(id) {
   if (!item) return;
 
   const texto = `🏗️ *OPORTUNIDADE DE OBRA (MT)*\n\n` +
+    `📌 *Origem:* ${item['Origem'] || 'Governo'}\n` +
     `📍 *Local:* ${item['Município']}\n` +
-    `🏢 *Órgão:* ${item['Órgão']}\n` +
-    `💰 *Valor:* ${formatarMoeda(item['Valor Estimado (R$)'])}\n` +
+    `🏢 *Contratante/Requerente:* ${item['Órgão']}\n` +
+    `💰 *Valor Estimado:* ${formatarMoeda(item['Valor Estimado (R$)'])}\n` +
     `🏷️ *Categoria:* ${item['Categoria']}\n\n` +
-    `📋 *Objeto:* ${item['Objeto']}\n\n` +
+    `📋 *Descrição:* ${item['Objeto']}\n\n` +
     `🔗 *Link Oficial:* ${item['Link PNCP']}`;
 
   const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
@@ -556,11 +775,13 @@ function recalcularBDI() {
 function exportarParaCSV() {
   if (!AppState.filtrados.length) return alert('Nenhum edital na lista para exportar.');
 
-  const headers = ['Data Publicação', 'Município', 'Categoria', 'Modalidade', 'Órgão', 'Valor Estimado (R$)', 'Processo', 'Objeto', 'Link PNCP'];
+  const headers = ['Origem', 'Alimentador', 'Data Publicação', 'Município', 'Categoria', 'Modalidade', 'Contratante / Órgão', 'Valor Estimado (R$)', 'Processo', 'Objeto', 'Link Oficial'];
   const linhas = [headers.join(';')];
 
   AppState.filtrados.forEach(item => {
     const linha = [
+      `"${item['Origem'] || ''}"`,
+      `"${item['Alimentador'] || ''}"`,
       `"${item['Data Publicação'] || ''}"`,
       `"${item['Município'] || ''}"`,
       `"${item['Categoria'] || ''}"`,
@@ -568,8 +789,8 @@ function exportarParaCSV() {
       `"${(item['Órgão'] || '').replace(/"/g, '""')}"`,
       `"${item['Valor Estimado (R$)'] || 0}"`,
       `"${item['Processo'] || ''}"`,
-      `"${(item['Objeto'] || '').replace(/"/g, '""')}"`,
-      `"${item['Link PNCP'] || ''}"`
+      `"${(item['Objeto'] || '').replace(/"/g, '""').replace(/[\r\n]+/g, ' ')}"`,
+      `"${obterLinkSeguro(item)}"`
     ];
     linhas.push(linha.join(';'));
   });
@@ -591,4 +812,193 @@ function debounce(fn, delay) {
     clearTimeout(timer);
     timer = setTimeout(() => fn.apply(this, args), delay);
   };
+}
+
+// ==========================================================================
+// Central de Alimentadores (Feeders Hub)
+// ==========================================================================
+
+function renderizarAlimentadores() {
+  const grid = document.getElementById('gridFeeders');
+  if (!grid) return;
+
+  const totalGov = AppState.dados.filter(d => (d['Origem'] || '').includes('Governo') || (d['Alimentador'] || '').includes('PNCP')).length;
+  const totalSis = AppState.dados.filter(d => (d['Origem'] || '').includes('Sistema S') || (d['Alimentador'] || '').includes('Sistema S')).length;
+  const totalAlv = AppState.dados.filter(d => (d['Origem'] || '').includes('Privada') || (d['Alimentador'] || '').includes('Alvará')).length;
+
+  const alimentadores = [
+    {
+      id: 'pncp',
+      classe: 'card-pncp',
+      nome: '🏛️ PNCP / Compras.gov (Governo)',
+      tipo: 'API Oficial Federal e Estadual',
+      status: 'Online & Monitorando',
+      frequencia: 'Diário às 07:00 (Automático)',
+      total: totalGov,
+      url: 'https://pncp.gov.br',
+      filtroValor: 'PNCP',
+      descricao: 'Alimentador que consulta a API nacional de Compras Públicas (Lei 14.133/2021) capturando editais de Mato Grosso de prefeituras, órgãos federais e autarquias.'
+    },
+    {
+      id: 'sistema_s',
+      classe: 'card-sistema-s',
+      nome: '🏢 Sistema S (Sesi / Senai / Sesc / Sebrae)',
+      tipo: 'Portais de Compras da Indústria e Comércio',
+      status: 'Online & Monitorando',
+      frequencia: 'Diário às 07:00 (Automático)',
+      total: totalSis,
+      url: 'https://licitacoes.portaldaindustria.com.br',
+      filtroValor: 'Sistema S',
+      descricao: 'Alimentador que monitora os portais de compras do Sistema FIEMT (Sesi/Senai), Fecomércio (Sesc/Senac) e Sebrae-MT em busca de reformas, climatização e manutenção predial.'
+    },
+    {
+      id: 'alvaras',
+      classe: 'card-alvaras',
+      nome: '🏗️ Diários Oficiais (Alvarás Cuiabá/VG)',
+      tipo: 'Atos de Aprovação de Projetos (SMADUS/AMM)',
+      status: 'Online & Monitorando',
+      frequencia: 'Diário às 07:00 (Automático)',
+      total: totalAlv,
+      url: 'https://gazetamunicipal.cuiaba.mt.gov.br',
+      filtroValor: 'Diário Oficial',
+      descricao: 'Alimentador que monitora as concessões de alvarás de construção e reformas comerciais na Gazeta Municipal de Cuiabá e Diário Oficial de Várzea Grande, descobrindo a obra antes de começar.'
+    }
+  ];
+
+  grid.innerHTML = alimentadores.map(alv => `
+    <div class="feeder-card ${alv.classe}">
+      <div>
+        <div class="feeder-top">
+          <div>
+            <div class="feeder-title">${alv.nome}</div>
+            <div class="feeder-type">${alv.tipo}</div>
+          </div>
+          <span class="status-badge">
+            <span class="status-dot"></span> ${alv.status}
+          </span>
+        </div>
+
+        <p class="feeder-desc">${alv.descricao}</p>
+      </div>
+
+      <div>
+        <div class="feeder-metrics">
+          <div>
+            <div class="feeder-metric-label">Frequência</div>
+            <div style="font-size: 0.85rem; font-weight: 600; margin-top: 4px; color: var(--text-main);">
+              <i class="bi bi-clock-history"></i> ${alv.frequencia}
+            </div>
+          </div>
+          <div>
+            <div class="feeder-metric-label">Oportunidades Ativas</div>
+            <div class="feeder-metric-value" style="margin-top: 2px;">${alv.total}</div>
+          </div>
+        </div>
+
+        <div class="feeder-actions">
+          <button class="btn-primary" style="flex: 1; padding: 8px 12px; font-size: 0.8rem;" onclick="selecionarAlimentador('${alv.filtroValor}')">
+            <i class="bi bi-funnel"></i> Filtrar Obras deste Alimentador
+          </button>
+          <a href="${alv.url}" target="_blank" rel="noopener noreferrer" class="btn-edital" style="padding: 8px 12px; font-size: 0.8rem;" title="Abrir Fonte Oficial">
+            <i class="bi bi-box-arrow-up-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selecionarAlimentador(nomeAlimentador) {
+  // Define o valor do select de filtro
+  const select = document.getElementById('filtroAlimentador');
+  if (select) select.value = nomeAlimentador;
+
+  // Alterna para a aba Radar
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tabNavRadar').classList.add('active');
+  AppState.abaAtiva = 'radar';
+  renderizarAbaAtual();
+  aplicarFiltros();
+}
+
+async function dispararVarreduraCompleta() {
+  const btnNav = document.getElementById('btnSyncNav');
+  const iconNav = document.getElementById('iconSyncNav');
+  const btnFeeders = document.getElementById('btnSyncFeeders');
+
+  // Ativa animação de carregamento nos botões
+  if (btnNav) btnNav.disabled = true;
+  if (iconNav) iconNav.classList.add('spin');
+  if (btnFeeders) {
+    btnFeeders.disabled = true;
+    btnFeeders.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Varrendo Alimentadores...';
+  }
+
+  mostrarToast('🔄 Conectando aos alimentadores (PNCP, Sistema S e Alvarás) e varrendo novas obras...', 'info');
+
+  try {
+    // 1. Chama o endpoint serverless /api/atualizar no Vercel
+    const res = await fetch('/api/atualizar', { method: 'POST' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.oportunidades && data.oportunidades.length > 0) {
+        AppState.dados = data.oportunidades;
+        AppState.metadados = data.metadados || {};
+      }
+    } else {
+      await carregarDados();
+    }
+  } catch (err) {
+    console.warn('API serverless indisponível ou offline. Recarregando base local.', err);
+    await carregarDados();
+  }
+
+  // Atualiza IDs e estado
+  AppState.dados.forEach((item, index) => {
+    item._id = `edital_${index}_${(item.Processo || '').replace(/[^a-zA-Z0-9]/g, '')}`;
+    if (!AppState.kanban[item._id]) AppState.kanban[item._id] = 'novas';
+  });
+
+  AppState.filtrados = [...AppState.dados];
+  atualizarKPIs();
+  renderizarAbaAtual();
+  if (AppState.abaAtiva === 'feeders') renderizarAlimentadores();
+
+  // Restaura botões
+  if (btnNav) btnNav.disabled = false;
+  if (iconNav) iconNav.classList.remove('spin');
+  if (btnFeeders) {
+    btnFeeders.innerHTML = '<i class="bi bi-check-circle"></i> Alimentadores Atualizados!';
+    setTimeout(() => {
+      btnFeeders.innerHTML = '<i class="bi bi-arrow-repeat"></i> Atualizar Alimentadores';
+      btnFeeders.disabled = false;
+    }, 2500);
+  }
+
+  mostrarToast(`✅ Varredura concluída! ${AppState.dados.length} oportunidades ativas consolidadas.`, 'success');
+}
+
+function atualizarDadosFeeders() {
+  return dispararVarreduraCompleta();
+}
+
+function mostrarToast(mensagem, tipo = 'info') {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = `toast ${tipo === 'success' ? 'toast-success' : 'toast-info'}`;
+  toast.innerHTML = `
+    <i class="bi ${tipo === 'success' ? 'bi-check-circle-fill' : 'bi-info-circle-fill'}" style="font-size: 1.1rem; color: ${tipo === 'success' ? 'var(--emerald)' : 'var(--primary)'};"></i>
+    <div>${mensagem}</div>
+  `;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(10px)';
+    setTimeout(() => toast.remove(), 400);
+  }, 4500);
 }
