@@ -14,34 +14,24 @@ from typing import List, Dict, Any, Optional
 
 API_URL = "https://dadosabertos.compras.gov.br/modulo-contratacoes/1_consultarContratacoes_PNCP_14133"
 
-# Termos obrigatórios de Obras e Serviços de Engenharia
-TERMOS_POSITIVOS = [
-    r"\breforma\b", r"\breformas\b",
-    r"\bobra\b", r"\bobras\b",
-    r"\bconstrucao\b", r"\bconstrução\b",
-    r"\bmanutencao predial\b", r"\bmanutenção predial\b",
-    r"\bpavimentacao\b", r"\bpavimentação\b",
-    r"\bservicos? de engenharia\b", r"\bserviços? de engenharia\b",
-    r"\bexecucao de engenharia\b", r"\bexecução de engenharia\b",
-    r"\badadequacao predial\b", r"\badequação predial\b",
-    r"\binstalacao eletrica\b", r"\binstalação elétrica\b",
-    r"\binstalacoes hidraulicas\b", r"\binstalações hidráulicas\b",
-    r"\bcobertura metalica\b", r"\bcobertura metálica\b",
-    r"\bpintura predial\b", r"\bpintura de fachada\b",
-    r"\brecapeamento\b", r"\bdrenagem pluvial\b",
-    r"\bclimatizacao\b", r"\bclimatização\b"
-]
-
-# Termos que anulam o resultado (falso positivo comum)
+# Termos que anulam o resultado (falso positivo comum / fora do escopo de engenharia civil)
 TERMOS_NEGATIVOS = [
-    r"\baquisicao de\b", r"\baquisição de\b",  # Geralmente é compra de material avulso, não serviço de obra
-    r"\bmerenda\b", r"\balimentacao\b", r"\balimentação\b",
-    r"\bsoftware\b", r"\bcomputador\b", r"\bwebcam\b",
-    r"\bveiculo\b", r"\bveículos\b", r"\bcombustivel\b", r"\bcombustível\b",
-    r"\bmedicamento\b", r"\bmedicamentos\b", r"\bexames\b",
-    r"\blimpeza e conservacao\b", r"\blimpeza e conservação\b", r"\brecepcionista\b",
-    r"\bapoio administrativo\b", r"\bvigilancia\b", r"\bvigilância\b",
-    r"\bpassagens aereas\b", r"\bpassagens aéreas\b"
+    r"limpeza", r"faxina", r"copeir[ao]", r"recepcionista", r"porteiro",
+    r"vigil[âa]ncia", r"seguran[çc]a armada", r"portaria", r"apoio administrativo",
+    r"outsourcing", r"impressora", r"impress[ãa]o", r"software", r"computador", r"webcam", r"telefonia",
+    r"correios", r"encomenda", r"transporte de correspond[êe]ncia", r"servi[çc]os postais",
+    r"mudan[çc]a", r"embalamento", r"transporte de bens", r"loca[çc][ãa]o de tenda", r"palco",
+    r"sonoriza[çc][ãa]o", r"ilumina[çc][ãa]o c[êe]nica", r"evento", r"coffee break", r"buffet",
+    r"prensa hidr[áa]ulica", r"armamento", r"ve[íi]culo", r"combust[íi]vel", r"pneu",
+    r"reforma agr[áa]ria", r"reforma de pneu", r"reforma de estofado", r"reforma de m[óo]veis",
+    r"tape[çc]aria", r"estofado", r"mobili[áa]rio", r"porta girat[óo]ria", r"detector de metais",
+    r"consumo estimado de energia", r"fatura de energia", r"tarifa de energia",
+    r"aquisi[çc][ãa]o de cabos", r"aquisi[çc][ãa]o de ferramentas", r"fornecimento de ferramentas",
+    r"ferramentas e equipamentos", r"cortador manual", r"tijolo, material",
+    r"materiais para dispensa", r"materiais diversos de constru[çc][ãa]o",
+    r"fornecimento de materiais de expediente", r"licen[çc]a de software",
+    r"material de consumo", r"alimentos", r"medicamento", r"merenda", r"farmac[êe]utic",
+    r"esta[çc][õo]es de rede completas"
 ]
 
 class RadarLicitacoes:
@@ -49,34 +39,39 @@ class RadarLicitacoes:
         self.uf = uf.upper()
         self.cidades_prioritarias = [c.upper() for c in (cidades_prioritarias or ["CUIABÁ", "CUIABA", "VÁRZEA GRANDE", "VARZEA GRANDE"])]
 
-    def _classificar_objeto(self, objeto: str) -> Optional[str]:
+    def _classificar_objeto(self, objeto: str, orgao: str = "") -> Optional[str]:
         if not objeto:
             return None
             
         texto = objeto.lower()
+        texto_orgao = orgao.lower() if orgao else ""
         
-        # 1. Checa se é claramente falso positivo
+        # 1. Checa se contém termos negativos explícitos no objeto ou no órgão
         for neg in TERMOS_NEGATIVOS:
-            if re.search(neg, texto):
-                # Se for "aquisição de material", só aceita se falar expressamente em obra/reforma contratada
-                if not (re.search(r"\bexecucao de obra\b", texto) or re.search(r"\bexecução de obra\b", texto) or re.search(r"\bservicos? de reforma\b", texto) or re.search(r"\bserviços? de reforma\b", texto)):
-                    return None
+            if re.search(neg, texto) or re.search(neg, texto_orgao):
+                return None
+
+        # 2. Rejeita compra pura de materiais sem serviço/mão de obra de engenharia
+        if re.search(r"\baquisi[çc][ãa]o de\b|\bfornecimento de materiais\b|\bcompra de\b", texto):
+            if not re.search(r"\bexecu[çc][ãa]o\b|\bservi[çc]os? de engenharia\b|\bobra\b|\breforma\b|\bm[ãa]o de obra\b", texto):
+                return None
                     
-        # 2. Categoriza por tipo de obra
-        if re.search(r"\breforma\b|\badequacao predial\b|\badequação predial\b", texto):
+        # 3. Categorização rigorosa de CONSTRUÇÃO CIVIL E ENGENHARIA
+        if re.search(r"\bexecu[çc][ãa]o de reforma\b|\breforma predial\b|\breforma de edif[íi]cio\b|\breforma da sede\b|\bcobertura da sede\b|\bcobertura met[áa]lica\b|\badequa[çc][ãa]o predial\b|\breforma e adequa[çc][ãa]o\b|\breforma de pisos\b|\bengenharia civil\b", texto):
             return "Reforma / Adequação Predial"
-        elif re.search(r"\bconstrucao\b|\bconstrução\b|\bexecucao de obra\b|\bexecução de obra\b", texto):
+        elif re.search(r"\bexecu[çc][ãa]o de obra\b|\bconstru[çc][ãa]o civil\b|\bconstru[çc][ãa]o de\b", texto):
             return "Construção Civil"
-        elif re.search(r"\bmanutencao predial\b|\bmanutenção predial\b|\bconservacao predial\b|\bconservação predial\b", texto):
+        elif re.search(r"\bmanuten[çc][ãa]o predial\b|\bconserva[çc][ãa]o predial\b|\brepara[çc][ãa]o do telhado\b|\bpintura predial\b", texto):
             return "Manutenção Predial"
-        elif re.search(r"\bpavimentacao\b|\bpavimentação\b|\brecapeamento\b|\bdrenagem\b", texto):
+        elif re.search(r"\bpavimenta[çc][ãa]o\b|\brecapeamento\b|\bdrenagem pluvial\b|\breconforma[çc][ãa]o de plataforma\b", texto):
             return "Pavimentação / Infraestrutura"
-        elif re.search(r"\beletrica\b|\belétrica\b|\bclimatizacao\b|\bclimatização\b|\bhidraulica\b|\bhidráulica\b", texto):
+        elif re.search(r"\bpo[çc]o tubular\b|\brede el[ée]trica\b|\binstala[çc][ãa]o el[ée]trica\b|\bclimatiza[çc][ãa]o predial\b|\bsistema de ar-condicionado\b", texto):
             return "Instalações / Climatização"
-        elif re.search(r"\bservicos? de engenharia\b|\bserviços? de engenharia\b", texto):
+        elif re.search(r"\bservi[çc]os? de engenharia\b|\bservi[çc]os? comuns? de engenharia\b|\bprojeto executivo de engenharia\b|\bprojeto b[áa]sico de engenharia\b|\bprojeto de arquitetura\b|\blaudo t[ée]cnico e art\b|\bfiscaliza[çc][ãa]o de obras\b|\bseguran[çc]a contra inc[êe]ndio\b", texto):
             return "Serviços de Engenharia Geral"
             
         return None
+
 
     def _fazer_requisicao(self, params: dict, max_tentativas: int = 3) -> Optional[dict]:
         for tentativa in range(max_tentativas):
@@ -128,7 +123,8 @@ class RadarLicitacoes:
                     
                 for item in resultados:
                     objeto = item.get("objetoCompra") or item.get("objetoContratacao") or ""
-                    categoria = self._classificar_objeto(objeto)
+                    orgao = item.get("orgaoEntidadeRazaoSocial") or ""
+                    categoria = self._classificar_objeto(objeto, orgao)
                     
                     if categoria:
                         municipio = (item.get("unidadeOrgaoMunicipioNome") or "N/A").strip().upper()
