@@ -31,21 +31,18 @@ class handler(BaseHTTPRequestHandler):
 
             radar_gov = RadarLicitacoes(uf="MT")
             hoje = datetime.now()
-            ini = hoje - timedelta(days=240)
+            ini = hoje - timedelta(days=365)
             ops_gov = radar_gov.buscar_oportunidades(data_inicio=ini.strftime("%Y-%m-%d"), data_fim=hoje.strftime("%Y-%m-%d"))
             
-            radar_s = RadarSistemaS(uf="MT")
-            ops_s = radar_s.buscar_oportunidades()
+            for i, item in enumerate(ops_gov):
+                item["_id"] = f"pncp_{item.get('Processo', str(i)).replace('/', '_').replace('.', '_').replace('-', '_')}"
+                item["Origem"] = "🏛️ Governo / PNCP"
+                item["Alimentador"] = "PNCP / Compras.gov (Governo)"
             
-            radar_alv = RadarAlvarasMT()
-            ops_alv = radar_alv.buscar_oportunidades()
-            
-            todas = ops_gov + ops_s + ops_alv
+            todas = ops_gov
             todas.sort(key=lambda x: str(x.get("Data Publicação", "")), reverse=True)
-            
-            total_gov = len([d for d in todas if "Governo" in str(d.get("Origem", "")) or "PNCP" in str(d.get("Alimentador", ""))])
-            total_sis = len([d for d in todas if "Sistema S" in str(d.get("Origem", "")) or "Sistema S" in str(d.get("Alimentador", ""))])
-            total_alv = len([d for d in todas if "Privada" in str(d.get("Origem", "")) or "Alvará" in str(d.get("Alimentador", ""))])
+            total_gov = len(todas)
+
 
             resposta = {
                 "sucesso": True,
@@ -56,35 +53,18 @@ class handler(BaseHTTPRequestHandler):
                     "alimentadores": [
                         {
                             "id": "pncp",
-                            "nome": "🏛️ PNCP / Compras.gov",
-                            "tipo": "API Oficial Federal e Estadual",
+                            "nome": "🏛️ Portal Nacional de Contratações Públicas (PNCP)",
+                            "tipo": "API Oficial Federal, Estadual e Municipal (100% Real)",
                             "status": "Online & Monitorando",
-                            "frequencia": "Diário (07:00)",
+                            "frequencia": "Atualização Diária",
                             "total": total_gov,
                             "url_fonte": "https://pncp.gov.br"
-                        },
-                        {
-                            "id": "sistema_s",
-                            "nome": "🏢 Sistema S (Sesi, Senai, Sesc, Sebrae)",
-                            "tipo": "Portais de Compras Paraestatais",
-                            "status": "Online & Monitorando",
-                            "frequencia": "Diário (07:00)",
-                            "total": total_sis,
-                            "url_fonte": "https://compras.sfiemt.ind.br/Default.aspx"
-                        },
-                        {
-                            "id": "alvaras",
-                            "nome": "🏗️ Diários Oficiais (Alvarás Cuiabá/VG)",
-                            "tipo": "Atos de Aprovação de Projetos",
-                            "status": "Online & Monitorando",
-                            "frequencia": "Diário (07:00)",
-                            "total": total_alv,
-                            "url_fonte": "https://gazetamunicipal.cuiaba.mt.gov.br"
                         }
                     ]
                 },
                 "oportunidades": todas
             }
+
             self.wfile.write(json.dumps(resposta, ensure_ascii=False).encode('utf-8'))
         except Exception as e:
             self.wfile.write(json.dumps({"sucesso": False, "erro": str(e)}).encode('utf-8'))
