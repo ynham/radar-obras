@@ -1,7 +1,7 @@
 {
   "metadados": {
-    "ultima_atualizacao": "24/09/2026 14:39",
-    "total_geral": 13,
+    "ultima_atualizacao": "25/09/2026 15:01",
+    "total_geral": 14,
     "alimentadores": [
       {
         "id": "pncp",
@@ -9,7 +9,7 @@
         "tipo": "API Governamental Federal e Estadual",
         "status": "Online & Monitorando",
         "frequencia": "Diário (07:00)",
-        "total": 1,
+        "total": 2,
         "url_fonte": "https://pncp.gov.br",
         "descricao": "Monitora licitações abertas de órgãos públicos em Mato Grosso via Lei 14.133."
       },
@@ -36,6 +36,21 @@
     ]
   },
   "oportunidades": [
+    {
+      "Categoria": "Serviços de Engenharia Geral",
+      "Município": "CUIABÁ",
+      "Prioritária (Cuiabá/VG)": "SIM",
+      "Valor Estimado (R$)": 40608.0,
+      "Modalidade": "Dispensa",
+      "Data Publicação": "2026-09-22",
+      "Encerramento Proposta": "2026-09-28 12:00",
+      "Órgão": "COMANDO DO EXERCITO",
+      "Objeto": "Contratação de empresa para execução de serviços de engenharia de interligação esgotamento sanitário de 09 (nove) Próprios Nacionais Residenciais (PNR) da Vila Militar Cel Iporã à rede municipal da concessionária Águas Cuiabá.",
+      "Processo": "64310.011040/2026-11",
+      "Link PNCP": "https://pncp.gov.br/app/editais/00394452000103/2026/20610",
+      "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)"
+    },
     {
       "Categoria": "Serviços de Engenharia Geral",
       "Município": "CAMPO VERDE",
