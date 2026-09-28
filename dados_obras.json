@@ -1,7 +1,7 @@
 {
   "metadados": {
-    "ultima_atualizacao": "25/09/2026 15:01",
-    "total_geral": 14,
+    "ultima_atualizacao": "28/09/2026 17:58",
+    "total_geral": 13,
     "alimentadores": [
       {
         "id": "pncp",
@@ -9,7 +9,7 @@
         "tipo": "API Governamental Federal e Estadual",
         "status": "Online & Monitorando",
         "frequencia": "Diário (07:00)",
-        "total": 2,
+        "total": 1,
         "url_fonte": "https://pncp.gov.br",
         "descricao": "Monitora licitações abertas de órgãos públicos em Mato Grosso via Lei 14.133."
       },
@@ -48,21 +48,6 @@
       "Objeto": "Contratação de empresa para execução de serviços de engenharia de interligação esgotamento sanitário de 09 (nove) Próprios Nacionais Residenciais (PNR) da Vila Militar Cel Iporã à rede municipal da concessionária Águas Cuiabá.",
       "Processo": "64310.011040/2026-11",
       "Link PNCP": "https://pncp.gov.br/app/editais/00394452000103/2026/20610",
-      "Origem": "🏛️ Governo / PNCP",
-      "Alimentador": "PNCP / Compras.gov (Governo)"
-    },
-    {
-      "Categoria": "Serviços de Engenharia Geral",
-      "Município": "CAMPO VERDE",
-      "Prioritária (Cuiabá/VG)": "NÃO",
-      "Valor Estimado (R$)": 100815.0,
-      "Modalidade": "Dispensa",
-      "Data Publicação": "2026-09-10",
-      "Encerramento Proposta": "2026-09-28 08:00",
-      "Órgão": "INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DE MATO GROSSO",
-      "Objeto": "Contratação de serviço de engenharia de adequação de projeto, conforme condições e exigências estabelecidas no termo de referência",
-      "Processo": "23879.000505.2026-98",
-      "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2026/364",
       "Origem": "🏛️ Governo / PNCP",
       "Alimentador": "PNCP / Compras.gov (Governo)"
     },
