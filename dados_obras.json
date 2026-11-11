@@ -1,7 +1,7 @@
 {
   "metadados": {
-    "ultima_atualizacao": "10/11/2026 17:30",
-    "total_geral": 14,
+    "ultima_atualizacao": "11/11/2026 17:43",
+    "total_geral": 15,
     "alimentadores": [
       {
         "id": "pncp",
@@ -9,7 +9,7 @@
         "tipo": "API Governamental Federal e Estadual",
         "status": "Online & Monitorando",
         "frequencia": "Diário (07:00)",
-        "total": 2,
+        "total": 3,
         "url_fonte": "https://pncp.gov.br",
         "descricao": "Monitora licitações abertas de órgãos públicos em Mato Grosso via Lei 14.133."
       },
@@ -36,6 +36,21 @@
     ]
   },
   "oportunidades": [
+    {
+      "Categoria": "Manutenção Predial",
+      "Município": "CUIABÁ",
+      "Prioritária (Cuiabá/VG)": "SIM",
+      "Valor Estimado (R$)": 4380.0,
+      "Modalidade": "Dispensa",
+      "Data Publicação": "2026-11-10",
+      "Encerramento Proposta": "",
+      "Órgão": "CONSELHO REGIONAL DE FISIOTERAPIA E TERAPIA OCUPACIONAL",
+      "Objeto": "Contratação de serviços especializados, divididos em 02 (dois) itens, compreendendo a desinstalação de 02 (dois) aparelhos de ar-condicionado de 30.000 BTUs da Sala 18 (atual subsede) e a respectiva instalação de 01 (uma) unidade na Sala 01 (pavimento térreo – nova subsede), bem como a execução de serviços de pintura predial interna na referida Sala 01, ambas situadas na Galeria Pátio Giardino, localizada na Rua das Andirobas, Setor Comercial, no município de Sinop – MT,",
+      "Processo": "09.0911.000131/2026-54",
+      "Link PNCP": "https://pncp.gov.br/app/editais/00577473000156/2026/28",
+      "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)"
+    },
     {
       "Categoria": "Serviços de Engenharia Geral",
       "Município": "LUCAS DO RIO VERDE",
