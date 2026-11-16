@@ -1,7 +1,7 @@
 {
   "metadados": {
-    "ultima_atualizacao": "13/11/2026 17:31",
-    "total_geral": 15,
+    "ultima_atualizacao": "16/11/2026 20:00",
+    "total_geral": 16,
     "alimentadores": [
       {
         "id": "pncp",
@@ -9,7 +9,7 @@
         "tipo": "API Governamental Federal e Estadual",
         "status": "Online & Monitorando",
         "frequencia": "Diário (07:00)",
-        "total": 3,
+        "total": 4,
         "url_fonte": "https://pncp.gov.br",
         "descricao": "Monitora licitações abertas de órgãos públicos em Mato Grosso via Lei 14.133."
       },
@@ -36,6 +36,21 @@
     ]
   },
   "oportunidades": [
+    {
+      "Categoria": "Construção Civil",
+      "Município": "SINOP",
+      "Prioritária (Cuiabá/VG)": "NÃO",
+      "Valor Estimado (R$)": 7820.0,
+      "Modalidade": "Dispensa",
+      "Data Publicação": "2026-11-13",
+      "Encerramento Proposta": "",
+      "Órgão": "EMPRESA BRASILEIRA DE PESQUISA AGROPECUARIA",
+      "Objeto": "Contratação emergencial de empresa especializada em serviços de engenharia e construção civil para a execução de remoção de resíduos, reconstituição de alvenaria estrutural/vedação com suporte de concreto armado, recomposição parcial de cobertura e instalação de forro de PVC, visando à reparação imediata dos danos causados por ventos fortes nas instalações da Embrapa Agrossilvipastoril.",
+      "Processo": "21155.001625/2026-42",
+      "Link PNCP": "https://pncp.gov.br/app/editais/00348003000110/2026/1659",
+      "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)"
+    },
     {
       "Categoria": "Manutenção Predial",
       "Município": "CUIABÁ",
