@@ -1,7 +1,7 @@
 {
   "metadados": {
-    "ultima_atualizacao": "16/11/2026 20:00",
-    "total_geral": 16,
+    "ultima_atualizacao": "17/11/2026 18:57",
+    "total_geral": 17,
     "alimentadores": [
       {
         "id": "pncp",
@@ -9,7 +9,7 @@
         "tipo": "API Governamental Federal e Estadual",
         "status": "Online & Monitorando",
         "frequencia": "Diário (07:00)",
-        "total": 4,
+        "total": 5,
         "url_fonte": "https://pncp.gov.br",
         "descricao": "Monitora licitações abertas de órgãos públicos em Mato Grosso via Lei 14.133."
       },
@@ -36,6 +36,21 @@
     ]
   },
   "oportunidades": [
+    {
+      "Categoria": "Construção Civil",
+      "Município": "ALTA FLORESTA",
+      "Prioritária (Cuiabá/VG)": "NÃO",
+      "Valor Estimado (R$)": 1654249.38,
+      "Modalidade": "Dispensa",
+      "Data Publicação": "2026-11-16",
+      "Encerramento Proposta": "",
+      "Órgão": "INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DE MATO GROSSO",
+      "Objeto": "Contratação de empresa especializada em engenharia de construção civil para execução das obras e serviços de reforma pós-incêndio do IFMT – Campus Alta Floresta, compreendendo serviços preliminares, estruturais, alvenaria, cobertura, instalações elétricas, SPDA, acabamentos e pintura, conforme especificações técnicas e projetos.",
+      "Processo": "158972-69/2026",
+      "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2026/503",
+      "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)"
+    },
     {
       "Categoria": "Construção Civil",
       "Município": "SINOP",
