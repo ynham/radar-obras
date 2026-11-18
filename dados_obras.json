@@ -1,7 +1,7 @@
 {
   "metadados": {
-    "ultima_atualizacao": "17/11/2026 18:57",
-    "total_geral": 17,
+    "ultima_atualizacao": "18/11/2026 18:39",
+    "total_geral": 19,
     "alimentadores": [
       {
         "id": "pncp",
@@ -9,7 +9,7 @@
         "tipo": "API Governamental Federal e Estadual",
         "status": "Online & Monitorando",
         "frequencia": "Diário (07:00)",
-        "total": 5,
+        "total": 7,
         "url_fonte": "https://pncp.gov.br",
         "descricao": "Monitora licitações abertas de órgãos públicos em Mato Grosso via Lei 14.133."
       },
@@ -36,6 +36,36 @@
     ]
   },
   "oportunidades": [
+    {
+      "Categoria": "Construção Civil",
+      "Município": "SINOP",
+      "Prioritária (Cuiabá/VG)": "NÃO",
+      "Valor Estimado (R$)": 0.0,
+      "Modalidade": "Dispensa",
+      "Data Publicação": "2026-11-17",
+      "Encerramento Proposta": "2026-11-24 09:00",
+      "Órgão": "EMPRESA BRASILEIRA DE PESQUISA AGROPECUARIA",
+      "Objeto": "Contratação de empresa especializada em engenharia e construção civil para a execução das obras de adequação estrutural do sistema GERECAMP (Gestão de Efluentes de Lavagem de Agrotóxicos em Campo), na sede da Embrapa Agrossilvipastoril, em Sinop/MT. A obra compreende a construção de estrutura de recebimento, contenção e evaporação de efluentes (51,15 m²), com fornecimento integral de materiais, equipamentos e mão de obra, sob regime de empreitada por preço global.",
+      "Processo": "21155.001687/2026-54",
+      "Link PNCP": "https://pncp.gov.br/app/editais/00348003000110/2026/1718",
+      "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)"
+    },
+    {
+      "Categoria": "Construção Civil",
+      "Município": "CUIABÁ",
+      "Prioritária (Cuiabá/VG)": "SIM",
+      "Valor Estimado (R$)": 19336.83,
+      "Modalidade": "Dispensa",
+      "Data Publicação": "2026-11-17",
+      "Encerramento Proposta": "2026-11-24 08:00",
+      "Órgão": "COMANDO DA MARINHA",
+      "Objeto": "Aquisição de materiais de construção civil e insumos para obras destinados à execução\nde reparos estruturais, manutenção corretiva, adequações e conservação predial dos Próprios\nNacionais Residenciais (PNR)",
+      "Processo": "63371.001483/2026-17",
+      "Link PNCP": "https://pncp.gov.br/app/editais/00394502000144/2026/16722",
+      "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)"
+    },
     {
       "Categoria": "Construção Civil",
       "Município": "ALTA FLORESTA",
