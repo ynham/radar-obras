@@ -1,7 +1,7 @@
 {
   "metadados": {
-    "ultima_atualizacao": "18/11/2026 18:39",
-    "total_geral": 19,
+    "ultima_atualizacao": "19/11/2026 18:52",
+    "total_geral": 21,
     "alimentadores": [
       {
         "id": "pncp",
@@ -9,7 +9,7 @@
         "tipo": "API Governamental Federal e Estadual",
         "status": "Online & Monitorando",
         "frequencia": "Diário (07:00)",
-        "total": 7,
+        "total": 9,
         "url_fonte": "https://pncp.gov.br",
         "descricao": "Monitora licitações abertas de órgãos públicos em Mato Grosso via Lei 14.133."
       },
@@ -36,6 +36,36 @@
     ]
   },
   "oportunidades": [
+    {
+      "Categoria": "Construção Civil",
+      "Município": "CUIABÁ",
+      "Prioritária (Cuiabá/VG)": "SIM",
+      "Valor Estimado (R$)": 130900.0,
+      "Modalidade": "Dispensa",
+      "Data Publicação": "2026-11-18",
+      "Encerramento Proposta": "2026-11-24 08:00",
+      "Órgão": "COMANDO DA MARINHA",
+      "Objeto": "Aquisição de materiais de construção civil e insumos para obras destinados à execução\nde reparos estruturais, manutenção corretiva, adequações e conservação predial dos Próprios\nNacionais Residenciais (PNR)",
+      "Processo": "63371.001475/2026-62",
+      "Link PNCP": "https://pncp.gov.br/app/editais/00394502000144/2026/16795",
+      "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)"
+    },
+    {
+      "Categoria": "Serviços de Engenharia Geral",
+      "Município": "LUCAS DO RIO VERDE",
+      "Prioritária (Cuiabá/VG)": "NÃO",
+      "Valor Estimado (R$)": 61680.0,
+      "Modalidade": "Dispensa",
+      "Data Publicação": "2026-11-18",
+      "Encerramento Proposta": "2026-11-25 09:00",
+      "Órgão": "INSTITUTO FEDERAL DE EDUCACAO, CIENCIA E TECNOLOGIA DE MATO GROSSO",
+      "Objeto": "Contratação tem por objeto a prestação de serviços técnicos especializados de engenharia para elaboração de diagnósticos e projetos destinados à adequação, modernização e ampliação da infraestrutura elétrica, à integração dos dois grupos geradores existentes e à adequação e ampliação do sistema de segurança contra incêndio e pânico do IFMT – Campus Lucas do Rio Verde,",
+      "Processo": "23751.000410.2026-19",
+      "Link PNCP": "https://pncp.gov.br/app/editais/10784782000150/2026/511",
+      "Origem": "🏛️ Governo / PNCP",
+      "Alimentador": "PNCP / Compras.gov (Governo)"
+    },
     {
       "Categoria": "Construção Civil",
       "Município": "SINOP",
