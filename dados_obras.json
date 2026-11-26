@@ -1,7 +1,7 @@
 {
   "metadados": {
-    "ultima_atualizacao": "25/11/2026 19:48",
-    "total_geral": 19,
+    "ultima_atualizacao": "26/11/2026 19:25",
+    "total_geral": 18,
     "alimentadores": [
       {
         "id": "pncp",
@@ -9,7 +9,7 @@
         "tipo": "API Governamental Federal e Estadual",
         "status": "Online & Monitorando",
         "frequencia": "Diário (07:00)",
-        "total": 7,
+        "total": 6,
         "url_fonte": "https://pncp.gov.br",
         "descricao": "Monitora licitações abertas de órgãos públicos em Mato Grosso via Lei 14.133."
       },
@@ -123,21 +123,6 @@
       "Objeto": "Contratação emergencial de empresa especializada em serviços de engenharia e construção civil para a execução de remoção de resíduos, reconstituição de alvenaria estrutural/vedação com suporte de concreto armado, recomposição parcial de cobertura e instalação de forro de PVC, visando à reparação imediata dos danos causados por ventos fortes nas instalações da Embrapa Agrossilvipastoril.",
       "Processo": "21155.001625/2026-42",
       "Link PNCP": "https://pncp.gov.br/app/editais/00348003000110/2026/1659",
-      "Origem": "🏛️ Governo / PNCP",
-      "Alimentador": "PNCP / Compras.gov (Governo)"
-    },
-    {
-      "Categoria": "Manutenção Predial",
-      "Município": "CUIABÁ",
-      "Prioritária (Cuiabá/VG)": "SIM",
-      "Valor Estimado (R$)": 4380.0,
-      "Modalidade": "Dispensa",
-      "Data Publicação": "2026-11-10",
-      "Encerramento Proposta": "",
-      "Órgão": "CONSELHO REGIONAL DE FISIOTERAPIA E TERAPIA OCUPACIONAL",
-      "Objeto": "Contratação de serviços especializados, divididos em 02 (dois) itens, compreendendo a desinstalação de 02 (dois) aparelhos de ar-condicionado de 30.000 BTUs da Sala 18 (atual subsede) e a respectiva instalação de 01 (uma) unidade na Sala 01 (pavimento térreo – nova subsede), bem como a execução de serviços de pintura predial interna na referida Sala 01, ambas situadas na Galeria Pátio Giardino, localizada na Rua das Andirobas, Setor Comercial, no município de Sinop – MT,",
-      "Processo": "09.0911.000131/2026-54",
-      "Link PNCP": "https://pncp.gov.br/app/editais/00577473000156/2026/28",
       "Origem": "🏛️ Governo / PNCP",
       "Alimentador": "PNCP / Compras.gov (Governo)"
     },
